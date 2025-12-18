@@ -40,18 +40,6 @@ define bundle {
     prompt = "Elastic Container Service (ECS) Cluster"
   }
 
-  input "vpc_bundle_uuid" {
-    type                  = string
-    description           = "The VPC to use for this service"
-    required_for_scaffold = true
-    allowed_values = tm_concat(
-      [for vpc in tm_bundles("example.io/tf-aws-vpc-alb/v1") :
-        { name = "${vpc.inputs.name.value} (${vpc.uuid})", value = vpc.uuid }
-      ]
-    )
-    prompt = "Virtual Private Cloud (VPC)"
-  }
-
   input "alb_bundle_uuid" {
     type                  = string
     description           = "The ALB to attach this service to"
@@ -131,7 +119,7 @@ define bundle stack "ecs-service" {
 
     after = [
       "tag:example.io/aws-ecs-cluster/${bundle.input.cluster_bundle_uuid.value}",
-      "tag:example.io/aws-vpc/${bundle.input.vpc_bundle_uuid.value}",
+      # "tag:example.io/aws-vpc/${bundle.input.alb_bundle_uuid.value}",
       "tag:example.io/aws-alb/${bundle.input.alb_bundle_uuid.value}",
     ]
   }
@@ -143,8 +131,9 @@ define bundle stack "ecs-service" {
       cluster_name = tm_one([for cluster in tm_bundles("example.io/tf-aws-ecs-fargate-cluster/v1") :
         cluster.inputs.cluster_name.value if cluster.uuid == bundle.input.cluster_bundle_uuid.value
       ])
+      # VPC is derived from the ALB bundle (they share the same UUID in the VPC-ALB bundle)
       vpc_filter_tags = {
-        "example.io/bundle-uuid" = bundle.input.vpc_bundle_uuid.value
+        "example.io/bundle-uuid" = bundle.input.alb_bundle_uuid.value
       }
       alb_filter_tags = {
         "example.io/bundle-uuid" = bundle.input.alb_bundle_uuid.value
