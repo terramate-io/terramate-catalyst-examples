@@ -1,5 +1,5 @@
 define component metadata {
-  class        = "components/terramate.io/terramate-aws-ecs-service"
+  class        = "components/example.io/terramate-aws-ecs-service"
   version      = "1.0.0"
   name         = "terramate-aws-ecs-service"
   description  = "Component that allows creating an ECS Fargate service on AWS with container definitions, load balancer integration, and blue/green deployment support. Uses AWS data sources to reference existing clusters, VPCs, and ALBs."
@@ -19,13 +19,13 @@ define component {
 
   input "vpc_filter_tags" {
     type        = map(string)
-    description = "Map of tag key-value pairs to filter VPC via AWS data sources (e.g., {\"terramate.io/bundle-uuid\" = \"...\"})"
+    description = "Map of tag key-value pairs to filter VPC via AWS data sources (e.g., {\"example.io/bundle-uuid\" = \"...\"})"
     default     = {}
   }
 
   input "alb_filter_tags" {
     type        = map(string)
-    description = "Map of tag key-value pairs to filter ALB via AWS data sources (optional, e.g., {\"terramate.io/bundle-uuid\" = \"...\"})"
+    description = "Map of tag key-value pairs to filter ALB via AWS data sources (optional, e.g., {\"example.io/bundle-uuid\" = \"...\"})"
     default     = null
   }
 

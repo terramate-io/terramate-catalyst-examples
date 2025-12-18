@@ -1,5 +1,5 @@
 define bundle metadata {
-  class   = "terramate.io/tf-aws-ecs-fargate-cluster/v1"
+  class   = "example.io/tf-aws-ecs-fargate-cluster/v1"
   version = "1.0.0"
 
   name         = "ECS Fargate Cluster"
@@ -47,21 +47,21 @@ define bundle stack "ecs-cluster" {
     EOF
 
     tags = [
-      "terramate.io/aws-ecs-cluster",
-      "terramate.io/bundle/${bundle.uuid}",
-      "terramate.io/aws-ecs-cluster/${bundle.uuid}",
-      "terramate.io/aws-ecs-cluster/${tm_slug(bundle.input.cluster_name.value)}",
+      "example.io/aws-ecs-cluster",
+      "example.io/bundle/${bundle.uuid}",
+      "example.io/aws-ecs-cluster/${bundle.uuid}",
+      "example.io/aws-ecs-cluster/${tm_slug(bundle.input.cluster_name.value)}",
     ]
   }
 
   component "ecs-cluster" {
-    source = "/components/terramate.io/terramate-aws-ecs-cluster/v1"
+    source = "/components/example.io/terramate-aws-ecs-cluster/v1"
 
     inputs = {
       cluster_name = bundle.input.cluster_name.value
       bundle_uuid  = bundle.uuid
       tags = {
-        "terramate.io/bundle-uuid" = bundle.uuid
+        "example.io/bundle-uuid" = bundle.uuid
       }
     }
   }

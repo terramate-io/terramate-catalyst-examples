@@ -1,5 +1,5 @@
 define component metadata {
-  class        = "components/terramate.io/terramate-aws-vpc"
+  class        = "components/example.io/terramate-aws-vpc"
   version      = "1.0.0"
   name         = "terramate-aws-vpc"
   description  = "Component that allows creating a VPC on AWS with public and private subnets, NAT gateway, and internet gateway."

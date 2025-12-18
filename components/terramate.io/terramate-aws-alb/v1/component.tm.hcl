@@ -1,5 +1,5 @@
 define component metadata {
-  class        = "components/terramate.io/terramate-aws-alb"
+  class        = "components/example.io/terramate-aws-alb"
   version      = "1.0.0"
   name         = "terramate-aws-alb"
   description  = "Component that allows creating an Application Load Balancer on AWS."
@@ -14,7 +14,7 @@ define component {
 
   input "vpc_filter_tags" {
     type        = map(string)
-    description = "Map of tag key-value pairs to filter VPC via AWS data sources (e.g., {\"terramate.io/bundle-uuid\" = \"...\"})"
+    description = "Map of tag key-value pairs to filter VPC via AWS data sources (e.g., {\"example.io/bundle-uuid\" = \"...\"})"
     default     = {}
   }
 

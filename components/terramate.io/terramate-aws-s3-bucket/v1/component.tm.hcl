@@ -1,5 +1,5 @@
 define component metadata {
-  class   = "terramate.io/tf-aws-s3"
+  class   = "example.io/tf-aws-s3"
   version = "1.0.0"
 
   name         = "AWS S3 Bucket Component"

@@ -1,5 +1,5 @@
 define bundle metadata {
-  class   = "terramate.io/tf-aws-ecs-fargate-service/v1"
+  class   = "example.io/tf-aws-ecs-fargate-service/v1"
   version = "1.0.0"
 
   name         = "ECS Fargate Service"
@@ -34,7 +34,7 @@ define bundle {
     type                  = string
     description           = "Bundle UUID of the ECS cluster to attach this service to"
     required_for_scaffold = true
-    allowed_values = [for cluster in tm_bundles("terramate.io/tf-aws-ecs-fargate-cluster/v1") :
+    allowed_values = [for cluster in tm_bundles("example.io/tf-aws-ecs-fargate-cluster/v1") :
       { name = "${cluster.inputs.cluster_name.value} (${cluster.uuid})", value = cluster.uuid }
     ]
     prompt = "ECS Cluster Bundle UUID"
@@ -45,7 +45,7 @@ define bundle {
     description           = "Bundle UUID of the VPC to use for this service"
     required_for_scaffold = true
     allowed_values = tm_concat(
-      [for vpc in tm_bundles("terramate.io/tf-aws-vpc-alb/v1") :
+      [for vpc in tm_bundles("example.io/tf-aws-vpc-alb/v1") :
         { name = "${vpc.inputs.name.value} (${vpc.uuid})", value = vpc.uuid }
       ]
     )
@@ -57,7 +57,7 @@ define bundle {
     description           = "Bundle UUID of the ALB to attach this service to"
     required_for_scaffold = true
     allowed_values = tm_concat(
-      [for alb in tm_bundles("terramate.io/tf-aws-vpc-alb/v1") :
+      [for alb in tm_bundles("example.io/tf-aws-vpc-alb/v1") :
         { name = "${alb.inputs.name.value} (${alb.uuid})", value = alb.uuid }
       ]
     )
@@ -123,31 +123,31 @@ define bundle stack "ecs-service" {
     EOF
 
     tags = [
-      "terramate.io/aws-ecs-service",
-      "terramate.io/bundle/${bundle.uuid}",
-      "terramate.io/aws-ecs-service/${bundle.uuid}",
-      "terramate.io/aws-ecs-service/${tm_slug(bundle.input.service_name.value)}",
+      "example.io/aws-ecs-service",
+      "example.io/bundle/${bundle.uuid}",
+      "example.io/aws-ecs-service/${bundle.uuid}",
+      "example.io/aws-ecs-service/${tm_slug(bundle.input.service_name.value)}",
     ]
 
     after = [
-      "tag:terramate.io/aws-ecs-cluster/${bundle.input.cluster_bundle_uuid.value}",
-      "tag:terramate.io/aws-vpc/${bundle.input.vpc_bundle_uuid.value}",
-      "tag:terramate.io/aws-alb/${bundle.input.alb_bundle_uuid.value}",
+      "tag:example.io/aws-ecs-cluster/${bundle.input.cluster_bundle_uuid.value}",
+      "tag:example.io/aws-vpc/${bundle.input.vpc_bundle_uuid.value}",
+      "tag:example.io/aws-alb/${bundle.input.alb_bundle_uuid.value}",
     ]
   }
 
   component "ecs-service" {
-    source = "/components/terramate.io/terramate-aws-ecs-service/v1"
+    source = "/components/example.io/terramate-aws-ecs-service/v1"
     inputs = {
       name = bundle.input.service_name.value
-      cluster_name = tm_one([for cluster in tm_bundles("terramate.io/tf-aws-ecs-fargate-cluster/v1") :
+      cluster_name = tm_one([for cluster in tm_bundles("example.io/tf-aws-ecs-fargate-cluster/v1") :
         cluster.inputs.cluster_name.value if cluster.uuid == bundle.input.cluster_bundle_uuid.value
       ])
       vpc_filter_tags = {
-        "terramate.io/bundle-uuid" = bundle.input.vpc_bundle_uuid.value
+        "example.io/bundle-uuid" = bundle.input.vpc_bundle_uuid.value
       }
       alb_filter_tags = {
-        "terramate.io/bundle-uuid" = bundle.input.alb_bundle_uuid.value
+        "example.io/bundle-uuid" = bundle.input.alb_bundle_uuid.value
       }
       target_group_key = bundle.input.target_group_key.value
       cpu              = bundle.input.cpu.value
@@ -184,7 +184,7 @@ define bundle stack "ecs-service" {
       }
 
       tags = {
-        "terramate.io/bundle-uuid" = bundle.uuid
+        "example.io/bundle-uuid" = bundle.uuid
       }
     }
   }

@@ -1,5 +1,5 @@
 define bundle metadata {
-  class   = "terramate.io/tf-aws-s3/v1"
+  class   = "example.io/tf-aws-s3/v1"
   version = "1.0.0"
 
   name         = "S3 Bucket"
@@ -46,20 +46,20 @@ define bundle stack "s3-bucket" {
     EOF
 
     tags = [
-      "terramate.io/aws-s3-bucket",
-      "terramate.io/bundle/${bundle.uuid}",
-      "terramate.io/aws-s3-bucket/${bundle.uuid}",
-      "terramate.io/aws-s3-bucket/${tm_slug(bundle.input.name.value)}",
+      "example.io/aws-s3-bucket",
+      "example.io/bundle/${bundle.uuid}",
+      "example.io/aws-s3-bucket/${bundle.uuid}",
+      "example.io/aws-s3-bucket/${tm_slug(bundle.input.name.value)}",
     ]
   }
 
   component "s3-bucket" {
-    source = "/components/terramate.io/terramate-aws-s3-bucket/v1"
+    source = "/components/example.io/terramate-aws-s3-bucket/v1"
     inputs = {
       name        = bundle.input.name.value
       bundle_uuid = bundle.uuid
       tags = {
-        "terramate.io/bundle-uuid" = bundle.uuid
+        "example.io/bundle-uuid" = bundle.uuid
       }
     }
   }
