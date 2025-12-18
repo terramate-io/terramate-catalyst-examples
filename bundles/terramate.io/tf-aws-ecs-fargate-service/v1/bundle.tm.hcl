@@ -17,7 +17,7 @@ define bundle {
   input "env" {
     type                  = string
     prompt                = "Environment"
-    description           = "Environment to create the service in."
+    description           = "Environment to create the service in"
     allowed_values        = global.environments
     required_for_scaffold = true
     multiselect           = false
@@ -37,31 +37,31 @@ define bundle {
     allowed_values = [for cluster in tm_bundles("example.io/tf-aws-ecs-fargate-cluster/v1") :
       { name = "${cluster.inputs.cluster_name.value} (${cluster.uuid})", value = cluster.uuid }
     ]
-    prompt = "ECS Cluster Bundle UUID"
+    prompt = "Elastic Container Service (ECS) Cluster"
   }
 
   input "vpc_bundle_uuid" {
     type                  = string
-    description           = "Bundle UUID of the VPC to use for this service"
+    description           = "The VPC to use for this service"
     required_for_scaffold = true
     allowed_values = tm_concat(
       [for vpc in tm_bundles("example.io/tf-aws-vpc-alb/v1") :
         { name = "${vpc.inputs.name.value} (${vpc.uuid})", value = vpc.uuid }
       ]
     )
-    prompt = "VPC Bundle UUID"
+    prompt = "Virtual Private Cloud (VPC)"
   }
 
   input "alb_bundle_uuid" {
     type                  = string
-    description           = "Bundle UUID of the ALB to attach this service to"
+    description           = "The ALB to attach this service to"
     required_for_scaffold = true
     allowed_values = tm_concat(
       [for alb in tm_bundles("example.io/tf-aws-vpc-alb/v1") :
         { name = "${alb.inputs.name.value} (${alb.uuid})", value = alb.uuid }
       ]
     )
-    prompt = "ALB Bundle UUID"
+    prompt = "Application Load Balancer (ALB)"
   }
 
   input "container_name" {
@@ -158,8 +158,8 @@ define bundle stack "ecs-service" {
       # Container definitions
       container_definitions = {
         (bundle.input.container_name.value) = {
-          cpu       = bundle.input.cpu.value / 2
-          memory    = bundle.input.memory.value / 2
+          cpu       = bundle.input.cpu.value
+          memory    = bundle.input.memory.value
           essential = true
           image     = bundle.input.container_image.value
           portMappings = [
