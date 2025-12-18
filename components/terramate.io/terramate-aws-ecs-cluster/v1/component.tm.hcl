@@ -1,5 +1,5 @@
 define component metadata {
-  class        = "components/terramate.io/terramate-aws-ecs-cluster"
+  class        = "components/example.io/terramate-aws-ecs-cluster"
   version      = "1.0.0"
   name         = "terramate-aws-ecs-cluster"
   description  = "Component that allows creating an ECS cluster on AWS with a default capacity provider strategy."

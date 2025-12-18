@@ -1,5 +1,5 @@
 define bundle metadata {
-  class   = "terramate.io/tf-aws-vpc-alb/v1"
+  class   = "example.io/tf-aws-vpc-alb/v1"
   version = "1.0.0"
 
   name         = "VPC and ALB"
@@ -55,20 +55,20 @@ define bundle stack "vpc" {
     EOF
 
     tags = [
-      "terramate.io/aws-vpc",
-      "terramate.io/bundle/${bundle.uuid}",
-      "terramate.io/aws-vpc/${bundle.uuid}",
-      "terramate.io/aws-vpc/${tm_slug(bundle.input.name.value)}",
+      "example.io/aws-vpc",
+      "example.io/bundle/${bundle.uuid}",
+      "example.io/aws-vpc/${bundle.uuid}",
+      "example.io/aws-vpc/${tm_slug(bundle.input.name.value)}",
     ]
   }
 
   component "vpc" {
-    source = "/components/terramate.io/terramate-aws-vpc/v1"
+    source = "/components/example.io/terramate-aws-vpc/v1"
     inputs = {
       name = bundle.input.name.value
       cidr = bundle.input.vpc_cidr.value
       tags = {
-        "terramate.io/bundle-uuid" = bundle.uuid
+        "example.io/bundle-uuid" = bundle.uuid
       }
     }
   }
@@ -84,26 +84,26 @@ define bundle stack "alb" {
     EOF
 
     tags = [
-      "terramate.io/aws-alb",
-      "terramate.io/bundle/${bundle.uuid}",
-      "terramate.io/aws-alb/${bundle.uuid}",
-      "terramate.io/aws-alb/${tm_slug(bundle.input.name.value)}",
+      "example.io/aws-alb",
+      "example.io/bundle/${bundle.uuid}",
+      "example.io/aws-alb/${bundle.uuid}",
+      "example.io/aws-alb/${tm_slug(bundle.input.name.value)}",
     ]
 
     after = [
-      "tag:terramate.io/aws-vpc/${bundle.uuid}"
+      "tag:example.io/aws-vpc/${bundle.uuid}"
     ]
   }
 
   component "alb" {
-    source = "/components/terramate.io/terramate-aws-alb/v1"
+    source = "/components/example.io/terramate-aws-alb/v1"
     inputs = {
       name = bundle.input.name.value
 
       # Use filter tags to look up VPC via AWS data sources
       # The component will automatically find the VPC and subnets by bundle UUID tag
       vpc_filter_tags = {
-        "terramate.io/bundle-uuid" = bundle.uuid
+        "example.io/bundle-uuid" = bundle.uuid
       }
 
       load_balancer_type         = "application"
@@ -146,7 +146,7 @@ define bundle stack "alb" {
       target_groups = {}
 
       tags = {
-        "terramate.io/bundle-uuid" = bundle.uuid
+        "example.io/bundle-uuid" = bundle.uuid
       }
     }
   }

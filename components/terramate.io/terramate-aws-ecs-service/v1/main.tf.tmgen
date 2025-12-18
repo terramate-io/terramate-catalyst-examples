@@ -72,9 +72,9 @@ resource "aws_lb_target_group" "alb_target_group" {
   count = component.input.alb_filter_tags.value != null ? 1 : 0
 
   name_prefix = "${substr("${replace("${data.aws_lb.alb_by_tags[0].name}-${component.input.target_group_key.value}", "-", "")}", 0, 6)}"
-  port         = component.input.container_port.value
-  protocol     = "HTTP"
-  vpc_id       = local.vpc_id_value
+  port        = component.input.container_port.value
+  protocol    = "HTTP"
+  vpc_id      = local.vpc_id_value
 
   target_type = "ip"
 
