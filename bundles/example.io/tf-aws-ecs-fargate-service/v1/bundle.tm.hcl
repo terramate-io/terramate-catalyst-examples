@@ -92,6 +92,13 @@ define bundle {
     description = "Key/name of the target group in the ALB (e.g., 'http', 'ex_ecs')"
     default     = "http"
   }
+
+  input "path_pattern" {
+    type        = string
+    prompt      = "Listener path pattern"
+    description = "Path pattern on the ALB listener to route to this service (e.g., /api/*)"
+    default     = "/${tm_slug(bundle.input.service_name.value)}/*"
+  }
 }
 
 define bundle {
@@ -151,6 +158,8 @@ define bundle stack "ecs-service" {
           memory    = bundle.input.memory.value
           essential = true
           image     = bundle.input.container_image.value
+          # Nginx needs write access to /var/cache/nginx for temporary files
+          readonlyRootFilesystem = false
           portMappings = [
             {
               name          = bundle.input.container_name.value
