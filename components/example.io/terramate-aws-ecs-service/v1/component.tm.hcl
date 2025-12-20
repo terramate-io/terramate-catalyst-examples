@@ -26,7 +26,7 @@ define component {
   input "alb_filter_tags" {
     type        = map(string)
     description = "Map of tag key-value pairs to filter ALB via AWS data sources (optional, e.g., {\"example.io/bundle-uuid\" = \"...\"})"
-    default     = null
+    default     = {}
   }
 
   input "target_group_key" {
