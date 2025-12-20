@@ -105,6 +105,14 @@ define bundle {
   scaffolding {
     path = "/stacks/${bundle.input.env.value}/ecs/_bundle_ecs_service_${tm_slug(bundle.input.service_name.value)}.tm.hcl"
     name = tm_slug(bundle.input.service_name.value)
+
+    enabled {
+      condition = tm_alltrue([
+        tm_length(tm_bundles("example.io/tf-aws-ecs-fargate-cluster/v1")) > 0,
+        tm_length(tm_bundles("example.io/tf-aws-vpc-alb/v1")) > 0,
+      ])
+      error_message = "This bundle requires both an ECS cluster bundle (example.io/tf-aws-ecs-fargate-cluster/v1) and a VPC-ALB bundle (example.io/tf-aws-vpc-alb/v1) to exist."
+    }
   }
 }
 
