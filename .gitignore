@@ -1,2 +1,4 @@
 *.tfplan
 .DS_Store
+.envrc
+.vscode
