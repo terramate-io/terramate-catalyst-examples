@@ -83,6 +83,7 @@ Creates and manages an S3 bucket on AWS. The bucket can be configured as private
 
 - Creates an S3 bucket with configurable visibility (private/public)
 - Enables versioning
+- Enables server-side encryption (AES256)
 - Configures basic bucket settings
 
 #### Components
@@ -132,7 +133,8 @@ Allows creating an ECS Fargate service on AWS with container definitions, load b
 
 ##### AWS S3 Bucket (`terramate-aws-s3-bucket`)
 
-Allows creating an S3 bucket on AWS with configurable ACL (default: private) and versioning enabled.
+Allows creating an S3 bucket on AWS with configurable ACL (default: private), versioning enabled, and server-side encryption.
 
 - Creates S3 bucket with configurable ACL/visibility
 - Enables versioning
+- Enables server-side encryption (AES256)
