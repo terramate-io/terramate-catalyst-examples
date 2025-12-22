@@ -8,8 +8,22 @@ module "s3_bucket" {
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
 
+  # Disable Block Public Access settings when using public ACLs
+  block_public_acls       = !tm_contains(["public-read", "public-read-write"], component.input.acl.value)
+  block_public_policy     = !tm_contains(["public-read", "public-read-write"], component.input.acl.value)
+  ignore_public_acls      = !tm_contains(["public-read", "public-read-write"], component.input.acl.value)
+  restrict_public_buckets = !tm_contains(["public-read", "public-read-write"], component.input.acl.value)
+
   versioning = {
     enabled = true
+  }
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
   }
 
   tags = component.input.tags.value
