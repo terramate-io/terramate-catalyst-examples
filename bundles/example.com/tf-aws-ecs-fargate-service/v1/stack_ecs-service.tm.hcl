@@ -1,6 +1,6 @@
 define bundle stack "ecs-service" {
   metadata {
-    path = tm_slug(bundle.input.service_name.value)
+    path = "/stacks/${tm_regex("-([^-]+)$", bundle.input.cluster_slug.value)[0]}/ecs-clusters/${tm_regex("^(.*)-[^-]+$", bundle.input.cluster_slug.value)[0]}/workloads/${tm_slug(bundle.input.service_name.value)}"
 
     name        = "AWS ECS Fargate Service ${bundle.input.service_name.value}"
     description = <<-EOF
@@ -15,26 +15,27 @@ define bundle stack "ecs-service" {
     ]
 
     after = [
-      "tag:example.com/aws-ecs-cluster/${bundle.input.cluster_bundle_uuid.value}",
+      "tag:example.com/aws-ecs-cluster/${bundle.input.cluster_slug.value}",
       # "tag:example.com/aws-vpc/${bundle.input.alb_bundle_uuid.value}",
-      "tag:example.com/aws-alb/${bundle.input.alb_bundle_uuid.value}",
+      "tag:example.com/aws-alb/${bundle.input.cluster_slug.value}",
     ]
   }
 
   component "ecs-service" {
     source = "/components/example.com/terramate-aws-ecs-service/v1"
     inputs = {
-      name = bundle.input.service_name.value
-      cluster_name = tm_one([for cluster in tm_bundles("example.com/tf-aws-ecs-fargate-cluster/v1") :
-        cluster.inputs.cluster_name.value if cluster.uuid == bundle.input.cluster_bundle_uuid.value
-      ])
+      name         = bundle.input.service_name.value
+      cluster_name = bundle.input.cluster_slug.value
+
       # VPC is derived from the ALB bundle (they share the same UUID in the VPC-ALB bundle)
       vpc_filter_tags = {
-        "example.com/bundle-uuid" = bundle.input.alb_bundle_uuid.value
+        "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value).uuid
       }
+
       alb_filter_tags = {
-        "example.com/bundle-uuid" = bundle.input.alb_bundle_uuid.value
+        "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value).uuid
       }
+
       target_group_key = bundle.input.target_group_key.value
       cpu              = bundle.input.cpu.value
       memory           = bundle.input.memory.value
@@ -72,7 +73,9 @@ define bundle stack "ecs-service" {
       }
 
       tags = {
-        "example.com/bundle-uuid" = bundle.uuid
+        "${bundle.class}/bundle-uuid" = bundle.uuid
+        # "${bundle.class}/bundle-alias" = bundle.alias
+        "${bundle.class}/bundle-alias" = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
       }
     }
   }

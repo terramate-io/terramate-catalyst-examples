@@ -1,6 +1,6 @@
 define bundle stack "vpc" {
   metadata {
-    path = "${tm_slug(bundle.input.name.value)}/${tm_slug(bundle.input.name.value)}-vpc"
+    path = "/stacks/${bundle.input.env.value}/ecs-clusters/${tm_slug(bundle.input.name.value)}/vpc"
 
     name        = "AWS VPC ${bundle.input.name.value}"
     description = <<-EOF
@@ -10,10 +10,8 @@ define bundle stack "vpc" {
     tags = [
       bundle.class,
       "${bundle.class}/vpc",
-      # "example.com/aws-vpc",
-      # "example.com/bundle/${bundle.uuid}",
-      # "example.com/aws-vpc/${bundle.uuid}",
-      # "example.com/aws-vpc/${tm_slug(bundle.input.name.value)}",
+      # "${bundle.class}/ecs-cluster/${bundle.alias}",
+      "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
     ]
   }
 
@@ -24,6 +22,8 @@ define bundle stack "vpc" {
       cidr = bundle.input.vpc_cidr.value
       tags = {
         "${bundle.class}/bundle-uuid" = bundle.uuid
+        # "${bundle.class}/bundle-alias"  = bundle.alias
+        "${bundle.class}/bundle-alias" = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
       }
     }
   }
