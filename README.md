@@ -36,7 +36,7 @@ To see what IaC bundles are available in this repository, run `terramate scaffol
 
 ![Bundles Overview](assets/img/bundles-overview.png)
 
-Choose for example the S3 Bucket Bundle to start creating a private S3 bucket.
+Choose for example the S3 Bucket Bundle to start creating an S3 bucket (configurable as private or public).
 
 ![Bundles Overview](assets/img/s3-creation.png)
 
@@ -79,9 +79,9 @@ Creates and manages an ECS Fargate service that can be attached to existing ECS 
 
 ##### S3 Bucket (`tf-aws-s3`)
 
-Creates and manages a private S3 bucket on AWS.
+Creates and manages an S3 bucket on AWS. The bucket can be configured as private or public, with private as the default.
 
-- Creates a private S3 bucket
+- Creates an S3 bucket with configurable visibility (private/public)
 - Enables versioning
 - Configures basic bucket settings
 
@@ -132,7 +132,7 @@ Allows creating an ECS Fargate service on AWS with container definitions, load b
 
 ##### AWS S3 Bucket (`terramate-aws-s3-bucket`)
 
-Allows creating a private S3 bucket on AWS with versioning enabled.
+Allows creating an S3 bucket on AWS with configurable ACL (default: private) and versioning enabled.
 
-- Creates private S3 bucket
+- Creates S3 bucket with configurable ACL/visibility
 - Enables versioning
