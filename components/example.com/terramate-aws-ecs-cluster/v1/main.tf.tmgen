@@ -1,0 +1,26 @@
+module "ecs_cluster" {
+  source       = "terraform-aws-modules/ecs/aws"
+  version      = "6.1.0"
+  cluster_name = component.input.cluster_name.value
+
+  # Capacity provider strategy: Controls how tasks are distributed across Fargate and Fargate Spot
+  # This is the default strategy used by services that don't specify their own strategy
+  default_capacity_provider_strategy = {
+    FARGATE = {
+      # weight: After base is satisfied, 50% of additional tasks will run on Fargate (on-demand)
+      # Higher weight = more tasks allocated to this provider
+      weight = 50
+      # base: Minimum 20 tasks always run on Fargate (guaranteed capacity)
+      # Only one provider can have a base value. Ensures reliability for critical workloads
+      base = 20
+    }
+    FARGATE_SPOT = {
+      # weight: After base is satisfied, 50% of additional tasks will run on Fargate Spot
+      # Fargate Spot is up to ~70% cheaper but can be interrupted with 2 minutes notice
+      # This balances cost savings with availability
+      weight = 50
+    }
+  }
+
+  tags = component.input.tags.value
+}
