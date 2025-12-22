@@ -4,7 +4,7 @@ define bundle metadata {
 
   name         = "S3 Bucket"
   description  = <<EOF
-    This Bundle creates and manages a private S3 Bucket on AWS.
+    This Bundle creates and manages an S3 Bucket on AWS. The bucket can be configured as private or public, with private as the default.
   EOF
   technologies = ["terraform", "opentofu"]
 }
@@ -26,6 +26,18 @@ define bundle {
     prompt                = "S3 Bucket Name"
     description           = "The name of the S3 bucket"
     required_for_scaffold = true
+  }
+
+  input "visibility" {
+    type        = string
+    prompt      = "Bucket Visibility"
+    description = "Whether the bucket should be private or public"
+    default     = "private"
+    allowed_values = [
+      { name = "Private", value = "private" },
+      { name = "Public Read", value = "public-read" },
+      { name = "Public Read/Write", value = "public-read-write" }
+    ]
   }
 }
 
@@ -57,6 +69,7 @@ define bundle stack "s3-bucket" {
     source = "/components/example.io/terramate-aws-s3-bucket/v1"
     inputs = {
       name        = bundle.input.name.value
+      acl         = bundle.input.visibility.value
       bundle_uuid = bundle.uuid
       tags = {
         "example.io/bundle-uuid" = bundle.uuid
