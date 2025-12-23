@@ -67,6 +67,7 @@ generate_hcl "main.tf" {
 
       # Keep listeners configurable via component input (default HTTP listener is provided by bundle)
       listeners = component.input.listeners.value
+
       # Target groups will be generated dynamically per ECS service (see separate generate_hcl)
       target_groups = component.input.target_groups.value
 

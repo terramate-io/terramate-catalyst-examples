@@ -1,11 +1,11 @@
 define bundle {
   input "env" {
-    type                  = string
-    description           = <<-EOF
+    type        = string
+    description = <<-EOF
 		  The environment to create the S3 bucket in.
 		EOF
 
-		# Scaffolding configuration
+    # Scaffolding configuration
     prompt                = "Environment"
     allowed_values        = global.environments
     required_for_scaffold = true
@@ -13,10 +13,10 @@ define bundle {
   }
 
   input "name" {
-    type                  = string
-    description           = "A globaly unique name of the S3 bucket"
+    type        = string
+    description = "A globaly unique name of the S3 bucket"
 
-		# Scaffolding configuration
+    # Scaffolding configuration
     prompt                = "S3 Bucket Name"
     required_for_scaffold = true
   }
