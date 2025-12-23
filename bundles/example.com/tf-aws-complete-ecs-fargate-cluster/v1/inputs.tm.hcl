@@ -4,8 +4,8 @@ define bundle {
     description = "A list of available environments to create the ECS cluster in."
 
     # scaffolding configuration
-    prompt                = "Please chose an environment"
-    allowed_values        = [
+    prompt = "Please chose an environment"
+    allowed_values = [
       for k, v in global.environments : { name = v, value = k }
     ]
     required_for_scaffold = true

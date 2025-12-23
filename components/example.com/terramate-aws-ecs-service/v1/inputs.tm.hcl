@@ -22,6 +22,17 @@ define component {
     default     = {}
   }
 
+  input "alb_name" {
+    type        = string
+    description = "The ALB to attach the service to"
+  }
+
+  input "target_group_name" {
+    type        = string
+    description = "The ALBs target group to attach the service to"
+  }
+
+
   input "target_group_key" {
     type        = string
     description = "Key/name of the target group in the ALB (e.g., 'http', 'ex_ecs')"

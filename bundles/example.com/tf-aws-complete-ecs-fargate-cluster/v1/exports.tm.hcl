@@ -10,4 +10,8 @@ define bundle {
   export "env" {
     value = bundle.input.env.value
   }
+
+  export "alb_name" {
+    value = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+  }
 }
