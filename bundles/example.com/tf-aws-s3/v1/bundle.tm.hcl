@@ -2,8 +2,8 @@ define bundle metadata {
   class   = "example.com/tf-aws-s3/v1"
   version = "1.0.0"
 
-  name         = "Amazon Simple Storage Service Bucket (AWS S3)"
-  description  = <<-EOF
+  name        = "Amazon Simple Storage Service Bucket (AWS S3)"
+  description = <<-EOF
     Creates and manage a private or public AWS S3 Bucket.
 
     Amazon Simple Storage Service (Amazon S3) is an object storage service offering industry-leading scalability, data availability, security, and performance.
