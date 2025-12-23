@@ -33,7 +33,7 @@ define bundle {
       tags = tm_merge(
         {
           # "Name"                                     = "${tm_slug(bundle.input.service_name.value)}-${resource.value.inputs.target_group_key.value}" # TODO why group key?
-          "Name"                            = tm_slug(bundle.input.service_name.value)
+          "Name"                           = tm_slug(bundle.input.service_name.value)
           "{bundle.class}/for-bundle-uuid" = "bundle.uuid"
           # "${bundle.class}/bundle-alias" = bundle.alias
           "{bundle.class}/for-bundle-alias" = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
