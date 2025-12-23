@@ -1,0 +1,21 @@
+data "aws_availability_zones" "available" {}
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "6.5.1"
+
+  name = component.input.name.value
+  cidr = component.input.cidr.value
+
+  # Set up 3 availability zones by default.
+  azs             = slice(data.aws_availability_zones.available.names, 0, 2)
+
+  # Create a private and a public subnet in each availability zone
+  private_subnets = [for k in [0, 1, 2] : tm_cidrsubnet(component.input.cidr.value, 4, k)]
+  public_subnets  = [for k in [0, 1, 2] : tm_cidrsubnet(component.input.cidr.value, 8, k + 48)]
+
+  enable_nat_gateway = component.input.enable_nat_gateway.value
+  single_nat_gateway = component.input.single_nat_gateway.value
+
+  tags = component.input.tags.value
+}
