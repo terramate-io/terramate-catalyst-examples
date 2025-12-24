@@ -18,7 +18,8 @@ define bundle stack "vpc" {
   component "vpc" {
     source = "/components/example.com/terramate-aws-vpc/v1"
     inputs = {
-      name = bundle.input.name.value
+      # name = bundle.alias
+      name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
       cidr = bundle.input.vpc_cidr.value
       tags = {
         "${bundle.class}/bundle-uuid" = bundle.uuid

@@ -19,7 +19,8 @@ define bundle stack "ecs-cluster" {
     source = "/components/example.com/terramate-aws-ecs-cluster/v1"
 
     inputs = {
-      cluster_name = bundle.input.name.value
+      # cluster_name = bundle.alias
+      cluster_name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
       bundle_uuid  = bundle.uuid
       tags = {
         "${bundle.class}/bundle-uuid" = bundle.uuid

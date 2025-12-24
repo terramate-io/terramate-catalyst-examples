@@ -8,8 +8,9 @@ define bundle {
     value = {
       priority = 5000
       actions = [{
-        type             = "forward"
-        target_group_key = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
+        forward = {
+          target_group_key = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
+        }
       }]
 
 

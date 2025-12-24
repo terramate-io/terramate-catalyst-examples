@@ -8,16 +8,15 @@ define bundle stack "ecs-service" {
     EOF
 
     tags = [
-      "example.com/aws-ecs-service",
-      "example.com/bundle/${bundle.uuid}",
-      "example.com/aws-ecs-service/${bundle.uuid}",
-      "example.com/aws-ecs-service/${tm_slug(bundle.input.service_name.value)}",
+      bundle.class,
+      "${bundle.class}/ecs-service",
     ]
 
     after = [
-      "tag:example.com/aws-ecs-cluster/${bundle.input.cluster_slug.value}",
-      # "tag:example.com/aws-vpc/${bundle.input.alb_bundle_uuid.value}",
-      "tag:example.com/aws-alb/${bundle.input.cluster_slug.value}",
+      # "example.com/tf-aws-complete-ecs-fargate-cluster/v1/ecs-cluster/${tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value).alias}",
+      "tag:example.com/tf-aws-complete-ecs-fargate-cluster/v1/ecs-cluster",
+      "tag:example.com/tf-aws-complete-ecs-fargate-cluster/v1/alb",
+      "tag:example.com/tf-aws-complete-ecs-fargate-cluster/v1/vcs",
     ]
   }
 
@@ -25,7 +24,8 @@ define bundle stack "ecs-service" {
     source = "/components/example.com/terramate-aws-ecs-service/v1"
 
     inputs {
-      name         = bundle.input.service_name.value
+      # name         = bundle.alias
+      name         = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
       cluster_name = bundle.input.cluster_slug.value
 
       # VPC is derived from the ALB bundle (they share the same UUID in the VPC-ALB bundle)
