@@ -12,6 +12,7 @@ define bundle stack "ecs-cluster" {
       "${bundle.class}/ecs-cluster",
       # "${bundle.class}/ecs-cluster/${bundle.alias}",
       "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
+      "example.com/aws-ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
     ]
   }
 
@@ -19,7 +20,7 @@ define bundle stack "ecs-cluster" {
     source = "/components/example.com/terramate-aws-ecs-cluster/v1"
 
     inputs = {
-      cluster_name = bundle.input.name.value
+      cluster_name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
       bundle_uuid  = bundle.uuid
       tags = {
         "${bundle.class}/bundle-uuid" = bundle.uuid

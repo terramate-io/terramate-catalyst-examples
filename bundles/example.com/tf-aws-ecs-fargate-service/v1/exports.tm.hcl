@@ -8,10 +8,10 @@ define bundle {
     value = {
       priority = 5000
       actions = [{
-        type             = "forward"
-        target_group_key = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
+        forward = {
+          target_group_key = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
+        }
       }]
-
 
       conditions = [{
         path_pattern = {
@@ -27,6 +27,9 @@ define bundle {
       port        = bundle.input.container_port.value
       protocol    = "HTTP"
       target_type = "ip"
+
+      # ECS manages target attachments, so don't create them here
+      create_attachment = false
 
       deregistration_delay = 30
 
@@ -46,10 +49,12 @@ define bundle {
         unhealthy_threshold = 2
         timeout             = 5
         interval            = 30
-        path                = tm_replace(bundle.input.path_pattern.value, "*", "")
-        matcher             = "200"
-        protocol            = "HTTP"
-        port                = "traffic-port"
+        # Remove wildcard and ensure path starts with /
+        # Split by /, prepend empty string to force leading /, then join
+        path     = tm_join("/", tm_concat([""], tm_split("/", tm_replace(bundle.input.path_pattern.value, "*", ""))))
+        matcher  = "200"
+        protocol = "HTTP"
+        port     = "traffic-port"
       }
     }
   }

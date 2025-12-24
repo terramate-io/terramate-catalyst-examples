@@ -34,11 +34,26 @@ generate_hcl "main.tf" {
       }
     }
 
+    # Get subnet details to filter by Availability Zone
+    # ALBs require exactly one subnet per AZ
+    data "aws_subnet" "public" {
+      for_each = toset(data.aws_subnets.public.ids)
+      id       = each.value
+    }
+
     locals {
       # Core networking values
       vpc_id_value         = data.aws_vpc.vpc_by_tags.id
-      subnets_value        = data.aws_subnets.public.ids
       vpc_cidr_block_value = data.aws_vpc.vpc_by_tags.cidr_block
+
+      # Filter subnets to ensure only one subnet per Availability Zone
+      # Group by AZ and take the first subnet in each AZ
+      subnets_by_az = {
+        for subnet_id, subnet in data.aws_subnet.public : subnet.availability_zone => subnet_id...
+      }
+      subnets_value = [
+        for az in sort(keys(local.subnets_by_az)) : local.subnets_by_az[az][0]
+      ]
 
       # Ensure egress rules have cidr_ipv4 set - fallback to VPC CIDR
       security_group_egress_rules = {

@@ -12,6 +12,7 @@ define bundle stack "alb" {
       "${bundle.class}/alb",
       # "${bundle.class}/ecs-cluster/${bundle.alias}",
       "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
+      "example.com/aws-alb/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
     ]
 
     after = [
@@ -72,7 +73,7 @@ define bundle stack "alb" {
       # No target groups configured by default - add them when deploying services
       target_groups = {
         for service in tm_bundles("example.com/tf-aws-ecs-fargate-service/v1") :
-        service.alias => service.exports.target_group
+        service.alias => service.exports.target_group.value
       }
 
       tags = {
