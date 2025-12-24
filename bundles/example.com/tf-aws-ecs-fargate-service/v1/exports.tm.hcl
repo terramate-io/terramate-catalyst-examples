@@ -49,9 +49,9 @@ define bundle {
         unhealthy_threshold = 2
         timeout             = 5
         interval            = 30
-        # Remove wildcard and ensure path starts with /
-        # Split by /, prepend empty string to force leading /, then join
-        path     = tm_join("/", tm_concat([""], tm_split("/", tm_replace(bundle.input.path_pattern.value, "*", ""))))
+        # Health check path should be the root path that the container serves
+        # The path_pattern is for ALB routing, not for health checks
+        path     = "/"
         matcher  = "200"
         protocol = "HTTP"
         port     = "traffic-port"
