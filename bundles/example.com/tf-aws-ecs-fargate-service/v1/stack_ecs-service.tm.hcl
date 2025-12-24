@@ -8,16 +8,14 @@ define bundle stack "ecs-service" {
     EOF
 
     tags = [
-      "example.com/aws-ecs-service",
-      "example.com/bundle/${bundle.uuid}",
-      "example.com/aws-ecs-service/${bundle.uuid}",
-      "example.com/aws-ecs-service/${tm_slug(bundle.input.service_name.value)}",
+      bundle.class,
+      "${bundle.class}/ecs-service",
     ]
 
     after = [
-      "tag:example.com/aws-ecs-cluster/${bundle.input.cluster_slug.value}",
-      # "tag:example.com/aws-vpc/${bundle.input.alb_bundle_uuid.value}",
-      "tag:example.com/aws-alb/${bundle.input.cluster_slug.value}",
+      "example.com/tf-aws-complete-ecs-fargate-cluster/v1/ecs-cluster",
+      "example.com/tf-aws-complete-ecs-fargate-cluster/v1/alb",
+      "example.com/tf-aws-complete-ecs-fargate-cluster/v1/vcs",
     ]
   }
 
