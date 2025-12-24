@@ -13,7 +13,7 @@ generate_hcl "imports.tf" {
     }
 
     data "aws_vpc" "vpc" {
-      dynamic "filter" {
+      tm_dynamic "filter" {
         for_each = component.input.vpc_filter_tags.value
 
         content {

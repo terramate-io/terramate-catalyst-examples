@@ -12,7 +12,7 @@ generate_hcl "main.tf" {
   content {
     # Look up VPC via AWS data sources by tags (VPC shares the ALB bundle UUID tag)
     data "aws_vpc" "vpc_by_tags" {
-      dynamic "filter" {
+      tm_dynamic "filter" {
         for_each = component.input.vpc_filter_tags.value
         content {
           name   = "tag:${filter.key}"
