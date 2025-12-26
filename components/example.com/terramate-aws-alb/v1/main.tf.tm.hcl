@@ -10,6 +10,9 @@ generate_hcl "main.tf" {
   }
 
   content {
+    resource "null_resource" "initial_deployment_trigger" {
+    }
+
     # Look up VPC via AWS data sources by tags (VPC shares the ALB bundle UUID tag)
     data "aws_vpc" "vpc_by_tags" {
       tm_dynamic "filter" {
@@ -19,6 +22,10 @@ generate_hcl "main.tf" {
           values = [filter.value]
         }
       }
+
+      depends_on = [
+        null_resource.initial_deployment_trigger
+      ]
     }
 
     # Get public subnets in the VPC (ALBs must be in public subnets)
