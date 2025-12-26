@@ -1,6 +1,6 @@
 define bundle stack "alb" {
   metadata {
-    path = "${tm_slug(bundle.input.name.value)}/${tm_slug(bundle.input.name.value)}-alb"
+    path = "/stacks/${bundle.input.env.value}/ecs-clusters/${tm_slug(bundle.input.name.value)}/alb"
 
     name        = "AWS ALB ${bundle.input.name.value}"
     description = <<-EOF
@@ -10,10 +10,8 @@ define bundle stack "alb" {
     tags = [
       bundle.class,
       "${bundle.class}/alb",
-      # "${bundle.class}/alb/${bundle.uuid}",
-      # "example.com/bundle/${bundle.uuid}",
-      # "example.com/aws-alb/${bundle.uuid}",
-      # "example.com/aws-alb/${tm_slug(bundle.input.name.value)}",
+      # "${bundle.class}/ecs-cluster/${bundle.alias}",
+      "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
     ]
 
     after = [
@@ -24,12 +22,12 @@ define bundle stack "alb" {
   component "alb" {
     source = "/components/example.com/terramate-aws-alb/v1"
     inputs = {
-      name = bundle.input.name.value
+      # name = bundle.alias
+      name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
 
-      # Use filter tags to look up VPC via AWS data sources
       # The component will automatically find the VPC and subnets by bundle UUID tag
       vpc_filter_tags = {
-        "example.com/bundle-uuid" = bundle.uuid
+        "${bundle.class}/bundle-uuid" = bundle.uuid
       }
 
       load_balancer_type         = "application"
@@ -48,8 +46,7 @@ define bundle stack "alb" {
       security_group_egress_rules = {
         all = {
           ip_protocol = "-1"
-          # cidr_ipv4 will be automatically set from VPC data source
-          cidr_ipv4 = null
+          cidr_ipv4   = bundle.input.vpc_cidr.value
         }
       }
 
@@ -65,14 +62,22 @@ define bundle stack "alb" {
             content_type = "text/plain"
             status_code  = "200"
           }
+          rules = {
+            for service in tm_bundles("example.com/tf-aws-ecs-fargate-service/v1") :
+            service.alias => service.exports.listener_rule.value
+          }
         }
       }
 
-      # No target groups configured by default - add them when deploying services
-      target_groups = {}
+      target_groups = {
+        for service in tm_bundles("example.com/tf-aws-ecs-fargate-service/v1") :
+        service.alias => service.exports.target_group.value
+      }
 
       tags = {
-        "example.com/bundle-uuid" = bundle.uuid
+        "${bundle.class}/bundle-uuid" = bundle.uuid
+        # "${bundle.class}/bundle-alias" = bundle.alias
+        "${bundle.class}/bundle-alias" = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
       }
     }
   }

@@ -2,36 +2,33 @@ globals "terraform" {
   version = "1.14.1"
 }
 
-globals "terraform" "providers" "aws" {
+globals "aws" {
   region = "us-east-1"
 }
 
-globals "terraform" "backend" {
-  bucket = "terramate-rene-terraform-state-backend"
-  region = global.terraform.providers.aws.region
-}
+## configure available environments
 
-globals "terraform" "providers" "aws" {
-  enabled = true
-
-  source  = "hashicorp/aws"
-  version = "~> 6.25.0"
-  config = {
-    region = global.terraform.providers.aws.region
+globals {
+  environments = {
+    dev = "Development"
+    stg = "Staging"
+    prd = "Production"
   }
 }
 
-globals "terraform" "providers" "null" {
-  enabled = true
+## local backend
 
-  source  = "hashicorp/null"
-  version = "~> 3.2.0"
+globals "terraform" "backend" {
+  type = "local"
 }
 
-globals {
-  environments = [
-    "dev",
-    "stg",
-    "prod",
-  ]
-}
+## S3 backend
+
+# globals "terraform" "backend" {
+#   type = "s3"
+#
+#   s3 = {
+#     bucket = "example-terraform-state-backend"
+#     region = "us-east-1"
+#   }
+# }

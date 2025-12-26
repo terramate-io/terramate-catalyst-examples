@@ -11,20 +11,18 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_slug(bundle.input.service_name.value)
+  alias = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
 
   scaffolding {
-    path = "/stacks/${bundle.input.env.value}/ecs/_bundle_ecs_service_${tm_slug(bundle.input.service_name.value)}.tm.hcl"
+    path = "/cluster-workloads/${bundle.input.cluster_slug.value}/${tm_slug(bundle.input.service_name.value)}.tm.hcl"
+
     name = tm_slug(bundle.input.service_name.value)
 
     enabled {
-      condition = tm_alltrue([
-        tm_length(tm_bundles("example.com/tf-aws-ecs-fargate-cluster/v1")) > 0,
-        tm_length(tm_bundles("example.com/tf-aws-vpc-alb/v1")) > 0,
-      ])
-      error_message = "This bundle requires both an ECS cluster bundle (example.com/tf-aws-ecs-fargate-cluster/v1) and a VPC-ALB bundle (example.com/tf-aws-vpc-alb/v1) to exist."
+      condition     = tm_length(tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1")) > 0
+      error_message = <<-EOF
+        This bundle requires an instance of the AWS ECS Fargate Cluster (example.com/tf-aws-complete-ecs-fargate-cluster/v1) bundle.
+      EOF
     }
   }
 }
-
-

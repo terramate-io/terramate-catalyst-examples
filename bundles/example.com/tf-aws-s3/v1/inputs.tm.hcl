@@ -6,8 +6,10 @@ define bundle {
 		EOF
 
     # Scaffolding configuration
-    prompt                = "Environment"
-    allowed_values        = global.environments
+    prompt = "Environment"
+    allowed_values = [
+      for k, v in global.environments : { name = v, value = k }
+    ]
     required_for_scaffold = true
     multiselect           = false
   }

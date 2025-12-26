@@ -8,7 +8,7 @@ module "vpc" {
   cidr = component.input.cidr.value
 
   # Set up 3 availability zones by default.
-  azs = slice(data.aws_availability_zones.available.names, 0, 2)
+  azs = slice(data.aws_availability_zones.available.names, 0, 3)
 
   # Create a private and a public subnet in each availability zone
   private_subnets = [for k in [0, 1, 2] : tm_cidrsubnet(component.input.cidr.value, 4, k)]
