@@ -2,7 +2,7 @@ define bundle metadata {
   class   = "example.com/tf-aws-complete-ecs-fargate-cluster/v1"
   version = "1.0.0"
 
-  name        = "AWS ECS Fargate Cluster (Complete)"
+  name        = "AWS ECS Fargate Cluster (VPC, ALB, ECS Fargate Cluster)"
   description = <<-EOF
     This Bundle creates and manages an ECS Fargate cluster on AWS with a default capacity provider strategy
     that balances cost savings (Fargate Spot) with reliability (Fargate on-demand).

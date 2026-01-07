@@ -16,7 +16,7 @@ define bundle {
 
   input "name" {
     type        = string
-    description = "A globaly unique name of the S3 bucket"
+    description = "A globally unique name of the S3 bucket"
 
     # Scaffolding configuration
     prompt                = "S3 Bucket Name"

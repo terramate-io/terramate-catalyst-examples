@@ -9,7 +9,7 @@ define bundle stack "s3-bucket" {
 
     tags = [
       bundle.class,
-      "${bundle.class}/s3-bcuket",
+      "${bundle.class}/s3-bucket",
     ]
   }
 
