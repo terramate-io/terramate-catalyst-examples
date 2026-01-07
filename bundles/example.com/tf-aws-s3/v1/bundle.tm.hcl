@@ -2,7 +2,7 @@ define bundle metadata {
   class   = "example.com/tf-aws-s3/v1"
   version = "1.0.0"
 
-  name        = "Amazon Simple Storage Service Bucket (AWS S3)"
+  name        = "AWS S3 Bucket"
   description = <<-EOF
     Creates and manage a private or public AWS S3 Bucket.
 
