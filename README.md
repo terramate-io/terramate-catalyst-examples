@@ -1,140 +1,298 @@
-# terramate-catalyst-examples
+# Terramate Catalyst Examples
 
-This repository contains examples demonstrating how [Terramate Catalyst](https://github.com/terramate-io/terramate-catalyst) enables developers to self-service provision infrastructure on AWS with Terraform.
+This repository contains practical examples demonstrating how [Terramate Catalyst](https://github.com/terramate-io/terramate-catalyst) enables developers to self-service provision infrastructure on AWS using Terraform—without writing Terraform code themselves.
 
 ## About Terramate Catalyst
 
-Terramate Catalyst enables developers and AI agents to provision infrastructure through self-service while platform teams retain full control by centrally defining how infrastructure is provisioned using Terraform or OpenTofu.
+[Terramate Catalyst](https://terramate.io/rethinking-iac/technical-introduction-to-terramate-catalyst/) transforms how infrastructure is delivered and consumed inside organizations by introducing two new primitives: **Bundles** and **Components**.
 
-Catalyst doesn't replace Infrastructure as Code — it operationalizes it. You can reuse your entire IaC investment without modifying any existing configuration. At its core are components (reusable IaC units like Terraform modules) and bundles (which combine components and abstract away details like environment and state management).
+### Components
 
-Developers don't need to understand Terraform or cloud provider details to consume infrastructure safely. Platform teams don't need to reinvent their IaC stack to enable self-service.
+Components are reusable, opinionated infrastructure blueprints defined by platform engineers. They encode organizational standards, governance rules, naming conventions, security policies, cost controls, and more. In practice, a Component may represent a "database setup," "message queue," "VPC," "cache cluster," or any other infrastructure pattern.
+
+Components can contain any arbitrary IaC—Terraform/OpenTofu resources, Terraform modules, Kubernetes manifests, or any other infrastructure-as-code. The idea is to provide infrastructure patterns that can be reused by platform engineers and sourced by one or multiple Bundles.
+
+### Bundles
+
+Bundles assemble one or more Components into ready-to-use, deployable units. These are what developers and AI agents consume when requesting infrastructure. Bundles abstract away all the complexity: no need to write Terraform, manage state, or deal with providers—you declare what you need (e.g., "a database for service X in environment Y"), and Catalyst fills in the rest.
+
+### Division of Responsibilities
+
+This separation creates a **clear division of responsibility**:
+
+- **Platform Engineers** design and maintain infrastructure logic, compliance, scalability, and IaC best practices.
+- **Developers** (or AI agents) request infrastructure via simple, high-level abstractions—without needing to understand Terraform, module variables, or backend configuration.
+
+In other words: Catalyst doesn't replace IaC—it operationalizes it and elegantly hides the complexity for non-expert infrastructure "consumers".
 
 ## Installation
 
-Start by installing Terramate Catalyst with [asdf](https://asdf-vm.com/) package manager:
+**Terramate Catalyst** is distributed separately from the Terramate CLI as a standalone binary on GitHub. It ships with two executables—`terramate` and `terramate-ls`—which act as drop-in replacements for the standard Terramate CLI.
+
+### Install Catalyst
+
+The easiest way to install Catalyst is via the **asdf** package manager:
 
 ```sh
 asdf plugin add terramate-catalyst https://github.com/terramate-io/asdf-terramate-catalyst
-asdf install
+asdf global terramate-catalyst 0.15.2-beta11
 ```
 
-Alternatively download the binary from the [terramate-catalyst](https://github.com/terramate-io/terramate-catalyst/releases) repository.
+Alternatively, you can download the binaries directly from the [GitHub releases](https://github.com/terramate-io/terramate-catalyst/releases). More installation options—including additional package managers—are coming soon.
+
+### Verify Installation
+
+After installing Terramate Catalyst, verify the installation:
+
+```sh
+terramate version
+# Should output: 0.15.2-beta11
+```
 
 > **Note:** If you are already using Terramate CLI, Terramate Catalyst acts as a drop-in replacement. It provides two binaries (`terramate` and `terramate-ls`) that replace your standard Terramate CLI installation.
 
-After the installing Terramate Catalyst, run `terramate version` to see the version installed.
-
-```sh
-terramate version 
-0.15.2-beta11
-```
-
 ## Getting Started
 
-To see what IaC bundles are available in this repository, run `terramate scaffold`.
+Clone this repository to explore the examples:
+
+```sh
+git clone git@github.com:terramate-io/terramate-catalyst-examples.git
+cd terramate-catalyst-examples
+```
+
+### Explore Available Bundles
+
+To see what infrastructure bundles are available in this repository, run:
+
+```sh
+terramate scaffold
+```
+
+This interactive command will show you all available bundles and guide you through creating infrastructure instances.
 
 ![Bundles Overview](assets/img/bundles-overview.png)
 
-Choose for example the S3 Bucket Bundle to start creating an S3 bucket (configurable as private or public).
+### Example: Create an S3 Bucket
 
-![Bundles Overview](assets/img/s3-creation.png)
+Choose the **S3 Bucket Bundle** to create an S3 bucket with just a few prompts—no Terraform knowledge required:
 
-### Overview
+![S3 Creation](assets/img/s3-creation.png)
 
-#### Bundles
+The scaffold command will:
+1. Prompt you for essential inputs (bucket name, ACL, tags)
+2. Create a bundle instance file (`.tm.yml`)
+3. Generate all necessary Terramate stacks and Terraform configuration
 
-Bundles provide Infrastructure as Code blueprints that define what Terramate Stacks should be created and what Terramate Components should be instantiated within those stacks. They solve several technical problems:
+After scaffolding, generate the infrastructure code:
 
-- **Manual stack creation**: Automatically create and configure Terramate Stacks without manual setup
-- **State management**: Abstract away state backend configuration and management complexity
-- **Component orchestration**: Handle component relationships, dependencies, and instantiation automatically
-- **Environment abstraction**: Simplify environment-specific configuration and state management
-- **Consistency enforcement**: Ensure infrastructure follows platform team-defined patterns and standards
-- **Developer experience**: Provide a guided, interactive experience that only prompts for essential inputs
+```sh
+terramate generate
+```
 
-##### VPC and ALB (`tf-aws-vpc-alb`)
+Then deploy with Terraform:
 
-Creates and manages a VPC with public and private subnets, NAT gateway, and an Application Load Balancer infrastructure. The ALB is configured with a basic HTTP listener, but target groups and routing rules should be added when deploying services.
+```sh
+terramate run -- terraform init
+terramate run -- terraform plan
+terramate run -- terraform apply
+```
 
-- Creates a VPC with public and private subnets
-- Sets up NAT Gateway and Internet Gateway
-- Deploys an Application Load Balancer (ALB) in public subnets
-- Provides foundational networking infrastructure
+## Examples in This Repository
 
-##### ECS Fargate Cluster (`tf-aws-ecs-fargate-cluster`)
+This repository demonstrates several real-world scenarios:
 
-Creates and manages an ECS Fargate cluster on AWS with a default capacity provider strategy that balances cost savings (Fargate Spot) with reliability (Fargate on-demand).
+### 1. Simple S3 Bucket Deployment
 
-- Creates an ECS Fargate cluster
-- Configures capacity provider strategy (Fargate Spot + on-demand)
+**Bundle:** `example.com/tf-aws-s3/v1`
 
-##### ECS Fargate Service (`tf-aws-ecs-fargate-service`)
+Allows developers to deploy a simple S3 bucket by defining its name and ACL only—without ever touching Terraform.
 
-Creates and manages an ECS Fargate service that can be attached to existing ECS clusters, VPCs, and Application Load Balancers. It uses filter tags to discover and reference existing infrastructure resources via AWS data sources.
+**Component:** `example.com/terramate-aws-s3-bucket/v1`
 
-- Creates an ECS Fargate service attached to existing cluster, VPC, and ALB
-- Uses AWS data sources to discover resources by tags
-- Configures container definitions and load balancer integration
+Creates an S3 bucket with:
+- Configurable ACL (default: private)
+- Versioning enabled
+- Server-side encryption (AES256)
 
-##### S3 Bucket (`tf-aws-s3`)
+### 2. Complete ECS Fargate Cluster
+
+**Bundle:** `example.com/tf-aws-complete-ecs-fargate-cluster/v1`
+
+Deploys a complete, production-ready ECS Fargate cluster with VPC, ALB, and networking—all in minutes.
+
+**Components:**
+- `example.com/terramate-aws-vpc/v1` - VPC with public/private subnets, NAT Gateway
+- `example.com/terramate-aws-alb/v1` - Application Load Balancer
+- `example.com/terramate-aws-ecs-cluster/v1` - ECS Fargate cluster
+
+This bundle demonstrates how multiple components work together to create complex infrastructure.
+
+### 3. ECS Fargate Service Deployment
+
+**Bundle:** `example.com/tf-aws-ecs-fargate-service/v1`
+
+Deploys containerized services on existing ECS clusters. The bundle automatically discovers available clusters and configures the ALB to route traffic to the new service.
+
+**Component:** `example.com/terramate-aws-ecs-service/v1`
+
+Creates an ECS Fargate service with:
+- Container definitions
+- Load balancer integration
+- Automatic ALB listener rule creation
+- Blue/green deployment support
+
+This example showcases **Bundle-to-Bundle relationships**—how bundles can discover and integrate with infrastructure created by other bundles.
+
+## Available Bundles
+
+### AWS S3 Bucket (`example.com/tf-aws-s3/v1`)
 
 Creates and manages an S3 bucket on AWS. The bucket can be configured as private or public, with private as the default.
 
-- Creates an S3 bucket with configurable visibility (private/public)
-- Enables versioning
-- Enables server-side encryption (AES256)
-- Configures basic bucket settings
+**Features:**
+- Configurable ACL/visibility (private/public)
+- Versioning enabled
+- Server-side encryption (AES256)
+- Configurable tags
 
-#### Components
+### Complete ECS Fargate Cluster (`example.com/tf-aws-complete-ecs-fargate-cluster/v1`)
 
-Components define what code should be generated given a set of Component Inputs combined with Terramate Code Generation. They solve several technical problems:
+Creates a complete, production-ready ECS Fargate cluster infrastructure on AWS.
 
-- **Code reuse**: Package reusable IaC patterns (like Terraform modules) into standardized components
-- **Input abstraction**: Define clear input interfaces with validation, defaults, and descriptions
-- **Code generation**: Use Terramate Code Generation to produce IaC files based on inputs
-- **Consistency**: Ensure infrastructure follows the same patterns across different stacks and environments
-- **Maintainability**: Centralize infrastructure logic so updates propagate to all instantiations
-- **Separation of concerns**: Separate what infrastructure to create (components) from how it's orchestrated (bundles)
+**Features:**
+- VPC with public and private subnets
+- NAT Gateway and Internet Gateway
+- Application Load Balancer (ALB) in public subnets
+- ECS Fargate cluster with capacity provider strategy
+- Automatic detection and integration of ECS services
 
-##### AWS VPC (`terramate-aws-vpc`)
+### ECS Fargate Service (`example.com/tf-aws-ecs-fargate-service/v1`)
 
-Allows creating a VPC on AWS with public and private subnets, NAT gateway, and internet gateway.
+Creates and manages an ECS Fargate service that can be attached to existing ECS clusters, VPCs, and Application Load Balancers.
 
-- Creates VPC with public and private subnets
-- Configures NAT Gateway and Internet Gateway
-- Sets up route tables and security groups
+**Features:**
+- Discovers existing ECS clusters via bundle queries
+- Uses AWS data sources to discover resources by tags
+- Configures container definitions and load balancer integration
+- Automatically updates ALB with listener rules and target groups
+- Supports blue/green deployment configuration
 
-##### AWS Application Load Balancer (`terramate-aws-alb`)
+## Available Components
 
-Allows creating an Application Load Balancer on AWS.
+### AWS VPC (`example.com/terramate-aws-vpc/v1`)
 
-- Creates Application Load Balancer
-- Configures listeners and target groups
-- Sets up security groups for ALB
+Creates a VPC on AWS with public and private subnets, NAT gateway, and internet gateway.
 
-##### AWS ECS Cluster (`terramate-aws-ecs-cluster`)
+**Features:**
+- VPC with configurable CIDR block
+- Public and private subnets across multiple availability zones
+- NAT Gateway and Internet Gateway
+- Route tables and security groups
 
-Allows creating an ECS cluster on AWS with a default capacity provider strategy.
+### AWS Application Load Balancer (`example.com/terramate-aws-alb/v1`)
 
-- Creates ECS cluster
-- Configures capacity providers
+Creates an Application Load Balancer on AWS with automatic detection of ECS services.
 
-##### AWS ECS Service (`terramate-aws-ecs-service`)
+**Features:**
+- Application Load Balancer in public subnets
+- Configurable listeners and target groups
+- Automatic listener rule creation for ECS services
+- Security groups for ALB
 
-Allows creating an ECS Fargate service on AWS with container definitions, load balancer integration, and blue/green deployment support. Uses AWS data sources to reference existing clusters, VPCs, and ALBs.
+### AWS ECS Cluster (`example.com/terramate-aws-ecs-cluster/v1`)
 
-- Creates ECS Fargate service
-- Configures container definitions
-- Sets up load balancer integration
+Creates an ECS cluster on AWS with a default capacity provider strategy.
+
+**Features:**
+- ECS Fargate cluster
+- Capacity provider strategy (Fargate Spot + on-demand)
+- Configurable cluster settings
+
+### AWS ECS Service (`example.com/terramate-aws-ecs-service/v1`)
+
+Creates an ECS Fargate service on AWS with container definitions, load balancer integration, and blue/green deployment support.
+
+**Features:**
+- ECS Fargate service
+- Container definitions with configurable images, ports, CPU, and memory
+- Load balancer integration
 - Uses AWS data sources to reference existing clusters, VPCs, and ALBs
 - Uses private subnets with NAT Gateway for internet access
 - Supports blue/green deployment configuration
 
-##### AWS S3 Bucket (`terramate-aws-s3-bucket`)
+### AWS S3 Bucket (`example.com/terramate-aws-s3-bucket/v1`)
 
-Allows creating an S3 bucket on AWS with configurable ACL (default: private), versioning enabled, and server-side encryption.
+Creates an S3 bucket on AWS with configurable ACL, versioning, and encryption.
 
-- Creates S3 bucket with configurable ACL/visibility
-- Enables versioning
-- Enables server-side encryption (AES256)
+**Features:**
+- Configurable ACL/visibility (private/public)
+- Versioning enabled
+- Server-side encryption (AES256)
+- Configurable tags
+
+## How It Works
+
+### Scaffolding Complex IaC
+
+Catalyst works by scaffolding the entire IaC stack, including state configuration and providers, but it doesn't require developers to know Terraform, OpenTofu, or their configuration language (HCL).
+
+Developers can use:
+- The `terramate scaffold` command to choose from bundles available in the current repository, a remote repository, or the upcoming registry in Terramate Cloud
+- The Terramate MCP Server for AI agent integration
+- Direct bundle instance file creation
+
+### Bundle Relationships
+
+Bundles can discover and integrate with infrastructure created by other bundles. For example, the ECS Fargate Service bundle can query for existing ECS clusters:
+
+```hcl
+input "cluster_slug" {
+  type        = string
+  description = "Bundle UUID of the ECS cluster to attach this service to"
+
+  allowed_values = [
+    for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
+    { name = "${cluster.inputs.name.value} (${cluster.exports.alias.value} / ${cluster.uuid})", value = cluster.exports.alias.value }
+  ]
+  prompt                = "Elastic Container Service (ECS) Cluster"
+  required_for_scaffold = true
+}
+```
+
+When a new ECS service is deployed, the ALB bundle automatically detects it and updates the load balancer configuration to include the necessary listener rules and target groups.
+
+### Versioning
+
+Both Components and Bundles can be managed and versioned in Git repositories using semantic versioning. The upcoming Terramate Registry will provide a dashboard to track Bundle and Component usage, as well as versions across multiple repositories and teams.
+
+## Project Structure
+
+```
+terramate-catalyst-examples/
+├── bundles/              # Bundle definitions
+│   └── example.com/
+│       ├── tf-aws-s3/v1/
+│       ├── tf-aws-complete-ecs-fargate-cluster/v1/
+│       └── tf-aws-ecs-fargate-service/v1/
+├── components/          # Component definitions
+│   └── example.com/
+│       ├── terramate-aws-s3-bucket/v1/
+│       ├── terramate-aws-vpc/v1/
+│       ├── terramate-aws-alb/v1/
+│       ├── terramate-aws-ecs-cluster/v1/
+│       └── terramate-aws-ecs-service/v1/
+├── cloud-services/      # Bundle instance files (what developers create)
+├── cluster-workloads/   # Bundle instance files for workloads
+├── stacks/              # Generated Terramate stacks and Terraform code
+└── imports/             # Shared configuration and mixins
+```
+
+## Learn More
+
+- **[Technical Introduction to Terramate Catalyst](https://terramate.io/rethinking-iac/technical-introduction-to-terramate-catalyst/)** - Comprehensive guide with hands-on examples
+- **[Terramate Catalyst GitHub Repository](https://github.com/terramate-io/terramate-catalyst)**
+- **[Terramate Documentation](https://terramate.io/docs/)** - Terramate CLI documentation
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
