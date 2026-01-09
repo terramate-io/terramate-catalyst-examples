@@ -35,7 +35,7 @@ The easiest way to install Catalyst is via the **asdf** package manager:
 
 ```sh
 asdf plugin add terramate-catalyst https://github.com/terramate-io/asdf-terramate-catalyst
-asdf global terramate-catalyst 0.15.2-beta11
+asdf set -u terramate-catalyst 0.15.2-beta11
 ```
 
 Alternatively, you can download the binaries directly from the [GitHub releases](https://github.com/terramate-io/terramate-catalyst/releases). More installation options—including additional package managers—are coming soon.
