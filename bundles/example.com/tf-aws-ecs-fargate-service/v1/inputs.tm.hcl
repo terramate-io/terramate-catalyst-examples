@@ -13,7 +13,7 @@ define bundle {
     # scaffolding configuration
     allowed_values = [
       for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
-      { name = "${cluster.inputs.name.value} (${cluster.exports.alias.value} / ${cluster.uuid})", value = cluster.exports.alias.value }
+      { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid})", value = cluster.export.alias.value }
     ]
     prompt                = "Elastic Container Service (ECS) Cluster"
     required_for_scaffold = true
@@ -24,7 +24,7 @@ define bundle {
   #   description           = "Bundle UUID of the ECS cluster to attach this service to"
   #   required_for_scaffold = true
   #   allowed_values = [for cluster in tm_bundles("example.com/tf-aws-ecs-fargate-cluster/v1") :
-  #     { name = "${cluster.inputs.cluster_name.value} (${cluster.uuid})", value = cluster.uuid }
+  #     { name = "${cluster.input.cluster_name.value} (${cluster.uuid})", value = cluster.uuid }
   #   ]
   #   prompt = "Elastic Container Service (ECS) Cluster"
   # }
@@ -35,7 +35,7 @@ define bundle {
   #   required_for_scaffold = true
   #   allowed_values = tm_concat(
   #     [for alb in tm_bundles("example.com/tf-aws-vpc-alb/v1") :
-  #       { name = "${alb.inputs.name.value} (${alb.uuid})", value = alb.uuid }
+  #       { name = "${alb.input.name.value} (${alb.uuid})", value = alb.uuid }
   #     ]
   #   )
   #   prompt = "Application Load Balancer (ALB)"
