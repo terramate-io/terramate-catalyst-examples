@@ -5,7 +5,7 @@ generate_hcl "main.tf" {
     # ECS service bundles that target this ALB (by bundle uuid)
     ecs_service_bundles = [
       for svc in tm_bundles("example.com/tf-aws-ecs-fargate-service/v1") :
-      svc if tm_try(svc.inputs.alb_bundle_uuid.value, "") == let.alb_bundle_uuid
+      svc if tm_try(svc.input.alb_bundle_uuid.value, "") == let.alb_bundle_uuid
     ]
   }
 
@@ -89,11 +89,11 @@ generate_hcl "main.tf" {
 #     alb_bundle_uuid = tm_try(component.input.tags.value["example.com/bundle-uuid"], null)
 #     ecs_service_bundles = [
 #       for svc in tm_bundles("example.com/tf-aws-ecs-fargate-service/v1") :
-#       svc if svc.inputs.cluster_slug.value == component.input.name.value
+#       svc if svc.input.cluster_slug.value == component.input.name.value
 #     ]
 #     # Map service UUIDs to their sanitized resource names for cross-referencing
 #     target_group_refs = {
-#       for svc in let.ecs_service_bundles : svc.uuid => tm_replace(tm_slug(svc.inputs.service_name.value), "-", "_")
+#       for svc in let.ecs_service_bundles : svc.uuid => tm_replace(tm_slug(svc.input.service_name.value), "-", "_")
 #     }
 
 #     service_ids = tm_sort([for s in let.ecs_service_bundles : s.uuid])
@@ -110,13 +110,13 @@ generate_hcl "main.tf" {
 #     tm_dynamic "resource" {
 #       for_each = { for s in let.ecs_service_bundles : s.uuid => s }
 #       # Use replace to convert hyphens to underscores for valid Terraform resource identifiers
-#       labels = ["aws_lb_target_group", tm_replace(tm_slug(resource.value.inputs.service_name.value), "-", "_")]
+#       labels = ["aws_lb_target_group", tm_replace(tm_slug(resource.value.input.service_name.value), "-", "_")]
 
 #       attributes = {
 #         # Deterministic name: "<alb-name>-<service-name>-<target_group_key>" stripped of dashes and truncated to 32 chars
 #         # Include service name to ensure uniqueness when multiple services use the same target_group_key
-#         name        = tm_substr(tm_replace("${component.input.name.value}-${tm_slug(resource.value.inputs.service_name.value)}-${resource.value.inputs.target_group_key.value}", "-", ""), 0, 32)
-#         port        = resource.value.inputs.container_port.value
+#         name        = tm_substr(tm_replace("${component.input.name.value}-${tm_slug(resource.value.input.service_name.value)}-${resource.value.input.target_group_key.value}", "-", ""), 0, 32)
+#         port        = resource.value.input.container_port.value
 #         protocol    = "HTTP"
 #         vpc_id      = local.vpc_id_value
 #         target_type = "ip"
@@ -128,7 +128,7 @@ generate_hcl "main.tf" {
 #           {
 #             # Helpful tags for discovery and traceability
 #             "example.com/target-group-for-bundle-uuid" = resource.key
-#             "Name"                                     = "${component.input.name.value}-${resource.value.inputs.target_group_key.value}"
+#             "Name"                                     = "${component.input.name.value}-${resource.value.input.target_group_key.value}"
 #           }
 #         )
 #       }
@@ -140,7 +140,7 @@ generate_hcl "main.tf" {
 #           unhealthy_threshold = 2
 #           timeout             = 5
 #           interval            = 30
-#           path                = tm_replace(resource.value.inputs.path_pattern.value, "*", "")
+#           path                = tm_replace(resource.value.input.path_pattern.value, "*", "")
 #           matcher             = "200"
 #           protocol            = "HTTP"
 #           port                = "traffic-port"
@@ -155,7 +155,7 @@ generate_hcl "main.tf" {
 #     # One listener rule per service with path-based routing and stable priority
 #     tm_dynamic "resource" {
 #       for_each = { for s in let.ecs_service_bundles : s.uuid => s }
-#       labels   = ["aws_lb_listener_rule", tm_replace(tm_slug(resource.value.inputs.service_name.value), "-", "_")]
+#       labels   = ["aws_lb_listener_rule", tm_replace(tm_slug(resource.value.input.service_name.value), "-", "_")]
 
 #       attributes = {
 #         listener_arn = module.alb.listeners["http"].arn
@@ -170,7 +170,7 @@ generate_hcl "main.tf" {
 
 #         condition {
 #           path_pattern {
-#             values = [resource.value.inputs.path_pattern.value]
+#             values = [resource.value.input.path_pattern.value]
 #           }
 #         }
 #       }

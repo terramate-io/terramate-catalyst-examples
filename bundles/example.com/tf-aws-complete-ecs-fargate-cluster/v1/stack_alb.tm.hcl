@@ -64,14 +64,14 @@ define bundle stack "alb" {
           }
           rules = {
             for service in tm_bundles("example.com/tf-aws-ecs-fargate-service/v1") :
-            service.alias => service.exports.listener_rule.value
+            service.alias => service.export.listener_rule.value
           }
         }
       }
 
       target_groups = {
         for service in tm_bundles("example.com/tf-aws-ecs-fargate-service/v1") :
-        service.alias => service.exports.target_group.value
+        service.alias => service.export.target_group.value
       }
 
       tags = {
