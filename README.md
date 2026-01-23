@@ -35,7 +35,7 @@ The easiest way to install Catalyst is via the **asdf** package manager:
 
 ```sh
 asdf plugin add terramate-catalyst https://github.com/terramate-io/asdf-terramate-catalyst
-asdf set -u terramate-catalyst 0.15.2-beta11
+asdf set -u terramate-catalyst 0.16.0-beta12
 ```
 
 Alternatively, you can download the binaries directly from the [GitHub releases](https://github.com/terramate-io/terramate-catalyst/releases). More installation options—including additional package managers—are coming soon.
@@ -46,7 +46,7 @@ After installing Terramate Catalyst, verify the installation:
 
 ```sh
 terramate version
-# Should output: 0.15.2-beta11
+# Should output: 0.16.0-beta12
 ```
 
 > **Note:** If you are already using Terramate CLI, Terramate Catalyst acts as a drop-in replacement. It provides two binaries (`terramate` and `terramate-ls`) that replace your standard Terramate CLI installation.
@@ -252,7 +252,7 @@ input "cluster_slug" {
 
   allowed_values = [
     for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
-    { name = "${cluster.inputs.name.value} (${cluster.exports.alias.value} / ${cluster.uuid})", value = cluster.exports.alias.value }
+    { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid})", value = cluster.export.alias.value }
   ]
   prompt                = "Elastic Container Service (ECS) Cluster"
   required_for_scaffold = true
