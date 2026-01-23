@@ -37,7 +37,7 @@ define bundle stack "ecs-service" {
         "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value).uuid
       }
 
-      alb_name          = tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value).exports.alb_name.value
+      alb_name          = tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value).export.alb_name.value
       target_group_name = tm_substr(tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)]), 0, 32)
 
       target_group_key = bundle.input.target_group_key.value

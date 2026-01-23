@@ -252,7 +252,7 @@ input "cluster_slug" {
 
   allowed_values = [
     for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
-    { name = "${cluster.inputs.name.value} (${cluster.exports.alias.value} / ${cluster.uuid})", value = cluster.exports.alias.value }
+    { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid})", value = cluster.export.alias.value }
   ]
   prompt                = "Elastic Container Service (ECS) Cluster"
   required_for_scaffold = true
