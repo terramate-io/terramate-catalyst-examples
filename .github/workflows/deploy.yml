@@ -1,0 +1,102 @@
+name: Terraform Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Terraform changes in changed Terramate stacks
+
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: read
+      checks: read
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install asdf
+        uses: asdf-vm/actions/install@v2
+
+      - name: Install Terramate Catalyst and Terraform via asdf
+        uses: asdf-vm/actions/setup@v2
+        with:
+          plugin_urls: |
+            terramate-catalyst=https://github.com/terramate-io/asdf-terramate-catalyst.git
+            terraform=https://github.com/asdf-community/asdf-hashicorp.git
+
+      - name: List changed stacks
+        id: list
+        run: terramate list --changed
+
+      # # Comment this step out if not using AWS
+      - name: Configure AWS credentials
+        if: steps.list.outputs.stdout
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+
+      - name: Verify AWS credentials
+        if: steps.list.outputs.stdout
+        run: aws sts get-caller-identity
+
+      - name: Run Terraform init in each changed stacks
+        if: steps.list.outputs.stdout
+        id: init
+        run: |
+          terramate run \
+            --parallel 1 \
+            --changed \
+            -- \
+            terraform init
+
+      - name: Create Terraform plan on changed stacks
+        if: steps.list.outputs.stdout
+        id: plan
+        run: |
+          terramate run \
+            --parallel 5 \
+            --changed \
+            -- \
+            terraform plan -lock-timeout=5m -out out.tfplan
+
+      - name: Apply planned changes on changed stacks
+        if: steps.list.outputs.stdout
+        id: apply
+        run: |
+          terramate run \
+            --parallel 5 \
+            --changed \
+            --sync-deployment \
+            --terraform-plan-file=out.tfplan \
+            -- \
+            terraform apply -input=false -auto-approve -lock-timeout=5m out.tfplan
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run drift detection
+        if: steps.list.outputs.stdout && ! cancelled() && steps.apply.outcome != 'skipped'
+        id: drift
+        run: |
+          terramate run \
+            --parallel 5 \
+            --changed \
+            --continue-on-error \
+            --sync-drift-status \
+            --terraform-plan-file=drift.tfplan \
+            -- \
+            terraform plan -out drift.tfplan -detailed-exitcode
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
