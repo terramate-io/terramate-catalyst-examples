@@ -1,0 +1,93 @@
+name: Scheduled Terraform Drift Detection
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  drift-detection:
+    name: Check Drift
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: read
+      checks: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install asdf
+        uses: asdf-vm/actions/install@v2
+
+      - name: Install Terramate Catalyst and Terraform via asdf
+        uses: asdf-vm/actions/setup@v2
+        with:
+          plugin_urls: |
+            terramate-catalyst=https://github.com/terramate-io/asdf-terramate-catalyst.git
+            terraform=https://github.com/asdf-community/asdf-hashicorp.git
+
+      # # Comment this step out if not using AWS
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+
+      - name: Verify AWS credentials
+        run: aws sts get-caller-identity
+
+      - name: Initialize Terraform
+        id: init
+        run: |
+          terramate run \
+           --parallel 1 \
+           -- \
+           terraform init -lock-timeout=5m
+
+      - name: Run drift detection
+        id: drift
+        run: |
+          terramate run \
+          --sync-drift-status \
+          --terraform-plan-file=drift.tfplan \
+          --continue-on-error \
+          --parallel 5 \
+          -- \
+          terraform plan -out drift.tfplan -detailed-exitcode -lock=false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      # # Optional step to reconcile (apply) the drifted stacks
+      # # This only applies to stack with a `reconcile` tag by default
+      # # Uncomment if desired
+      # - name: Check for auto reconcile
+      #   id: find-drifted
+      #   run: |
+      #     terramate list \
+      #       --status=drifted \
+      #       --tags reconcile
+      #
+      # - name: Drift reconciliation
+      #   id: drift-reconcile
+      #   if: steps.find-drifted.outputs.stdout
+      #   run: |
+      #     terramate run \
+      #       --status=drifted \
+      #       --tags reconcile \
+      #       --parallel 5 \
+      #       --sync-deployment \
+      #       --terraform-plan-file=drift.tfplan \
+      #       -- \
+      #       terraform apply -input=false -auto-approve -lock-timeout=5m drift.tfplan
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
