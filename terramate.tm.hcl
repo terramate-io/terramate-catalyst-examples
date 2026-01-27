@@ -1,6 +1,11 @@
 terramate {
   config {
     experiments = ["tmgen"]
+
+    cloud {
+      organization = "terramate"
+      location     = "eu"
+    }
   }
 }
 
