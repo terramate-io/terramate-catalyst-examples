@@ -23,15 +23,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install asdf
-        uses: asdf-vm/actions/install@v2
+      # Install Terramate via GitHub action to set up the wrapper that captures stdout
+      # This enables steps.list.outputs.stdout to work correctly for conditional steps
+      # TODO: Replace with terramate-catalyst-action once available (instead of installing via asdf)
+      - name: Install Terramate
+        uses: terramate-io/terramate-action@v3
 
-      - name: Install Terramate Catalyst and Terraform via asdf
-        uses: asdf-vm/actions/setup@v2
-        with:
-          plugin_urls: |
-            terramate-catalyst=https://github.com/terramate-io/asdf-terramate-catalyst.git
-            terraform=https://github.com/asdf-community/asdf-hashicorp.git
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@v3
+
+      # Install Terramate Catalyst via asdf (will override Terramate CLI in PATH)
+      # Catalyst is a drop-in replacement, so the wrapper from terramate-action still works
+      - name: Install Terramate Catalyst with asdf
+        run: |
+          asdf plugin add terramate-catalyst https://github.com/terramate-io/asdf-terramate-catalyst.git
+          asdf install terramate-catalyst
+
+      - name: Install Terraform with asdf
+        run: |
+          asdf plugin add terraform
+          asdf install terraform
 
       - name: List changed stacks
         id: list
