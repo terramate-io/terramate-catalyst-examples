@@ -9,7 +9,7 @@ data "aws_vpc" "vpc_by_tags" {
   filter {
     name = "tag:example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid"
     values = [
-      "2cfe746a-f0ee-4ead-af0b-21705419b2a5",
+      "4f9b71ce-f805-407d-80f9-9527e0690fd1",
     ]
   }
 }
@@ -74,7 +74,7 @@ module "alb" {
     }
   }
   load_balancer_type = "application"
-  name               = "dev-cluster-dev"
+  name               = "ecs-fargate-stg-stg"
   security_group_egress_rules = {
     all = {
       cidr_ipv4   = "10.0.0.0/16"
@@ -92,8 +92,8 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   subnets = local.subnets_value
   tags = {
-    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-alias" = "dev-cluster-dev"
-    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid"  = "2cfe746a-f0ee-4ead-af0b-21705419b2a5"
+    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-alias" = "ecs-fargate-stg-stg"
+    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid"  = "4f9b71ce-f805-407d-80f9-9527e0690fd1"
   }
   target_groups = {
     ecs-fargate-stg-stg-nginx-stg = {

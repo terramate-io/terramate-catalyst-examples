@@ -1,0 +1,35 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: nginx-stg
+  uuid: f415bc06-7c25-4545-85f0-2cb844ea2a47
+spec:
+  source: /bundles/example.com/tf-aws-ecs-fargate-service/v1
+  inputs:
+    
+    # Name of the ECS Fargate service
+    service_name: nginx-stg
+    
+    # Bundle UUID of the ECS cluster to attach this service to
+    cluster_slug: ecs-fargate-stg-stg
+    
+    # Name of the main container
+    container_name: nginx
+    
+    # Port that containers will listen on
+    container_port: 80
+    
+    # Docker image URI for the main container
+    container_image: nginx:latest
+    
+    # CPU units for the task (1024 = 1 vCPU)
+    cpu: 1024
+    
+    # Memory for the task in MB
+    memory: 4096
+    
+    # Path pattern on the ALB listener to route to this service (e.g., /api/*)
+    path_pattern: /nginx-stg/*
+    
+    # Key/name of the target group in the ALB (e.g., 'http', 'ex_ecs')
+    target_group_key: http
