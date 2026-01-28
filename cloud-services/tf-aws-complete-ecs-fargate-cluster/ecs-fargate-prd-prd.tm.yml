@@ -1,0 +1,17 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: ecs-fargate-prd-prd
+  uuid: 791b45ca-cb0d-4bbb-a4dd-8556726ce9d1
+spec:
+  source: /bundles/example.com/tf-aws-complete-ecs-fargate-cluster/v1
+  inputs:
+    
+    # A list of available environments to create the ECS cluster in.
+    env: prd
+    
+    # The name for the ECS Fargate Cluster, Load Balancer, and VPC.
+    name: ecs-fargate-prd
+    
+    # CIDR block for the VPC (e.g., 10.0.0.0/16)
+    vpc_cidr: 10.0.0.0/16
