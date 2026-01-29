@@ -1,0 +1,17 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: s3-example-bucket
+  uuid: c3de2260-871a-4cad-9a3b-c00076060258
+spec:
+  source: /bundles/example.com/tf-aws-s3/v1
+  inputs:
+    
+    # The environment to create the S3 bucket in.
+    env: dev
+    
+    # A globally unique name of the S3 bucket
+    name: s3-example-bucket
+    
+    # Whether the bucket should be private or public
+    visibility: private
