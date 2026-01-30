@@ -100,7 +100,7 @@ generate_hcl "terraform.tf" {
     providers_aliases = { for k, v in tm_try(global.terraform.providers, {}) :
       k => v.config if tm_alltrue([
         tm_length(tm_split(".", k)) == 2,
-        tm_try(v.enabled, true),
+        tm_try(v.enabled, tm_contains(let.stack_providers, k)),
         tm_can(v.config)
       ])
     }
@@ -128,7 +128,6 @@ generate_hcl "terraform.tf" {
       labels     = [provider.key]
       attributes = provider.value
     }
-
 
     # Provider aliases
 
