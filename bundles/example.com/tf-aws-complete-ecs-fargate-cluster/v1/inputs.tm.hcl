@@ -35,6 +35,6 @@ define bundle {
   input "tags" {
     type        = map(string)
     description = "AWS Rersource tags to attach to all created resources. Additional internal tags will be added by default."
-
+    default     = {}
   }
 }
