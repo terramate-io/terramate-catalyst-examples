@@ -12,6 +12,10 @@ define bundle stack "ecs-cluster" {
       "${bundle.class}/ecs-cluster",
       # "${bundle.class}/ecs-cluster/${bundle.alias}",
       "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
+
+      # configure aws and null provider for this stack
+      "terraform/provider/aws",
+      "terraform/provider/null",
     ]
   }
 
