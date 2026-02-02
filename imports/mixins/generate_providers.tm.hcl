@@ -8,13 +8,14 @@
 # Most providers requiring simple configuration work out of the box.
 
 # What is generated?
-
-# This logic generates Terraform provider configurations for all stacks that have
-# tags in the following format set:
+#
+# This mixin generates a `terraform.tf` file (including the `terraform` block with
+# `required_version`) for all stacks, unless explicitly disabled (see below).
+#
+# In addition, it generates Terraform provider configuration (`required_providers`
+# and `provider` blocks) for all stacks that have tags in the following format set:
 # - `terraform/provider/{provider}`
-
-# Example tags: 'terraform/provider/aws', 'terraform/provider/null'
-
+#   example tags: 'terraform/provider/aws', 'terraform/provider/null'
 #
 # TERRAMATE - Bundles
 #
