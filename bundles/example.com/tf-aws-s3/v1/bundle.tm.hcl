@@ -14,7 +14,7 @@ define bundle {
   alias = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
 
   scaffolding {
-    path = "/stacks/${bundle.input.env.value}/s3/_bundle_s3_${tm_slug(bundle.input.name.value)}.tm.hcl"
+    path = "/config/${bundle.input.env.value}/storage/tf-aws-s3/${tm_slug(bundle.input.name.value)}.tm.hcl"
     name = tm_slug(bundle.input.name.value)
   }
 }

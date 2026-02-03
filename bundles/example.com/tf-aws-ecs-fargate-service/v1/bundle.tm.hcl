@@ -14,7 +14,16 @@ define bundle {
   alias = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
 
   scaffolding {
-    path = "/cluster-workloads/${bundle.input.cluster_slug.value}/${tm_slug(bundle.input.service_name.value)}.tm.hcl"
+    lets {
+      # Find the cluster bundle that matches cluster_slug and extract its env
+      cluster_env = tm_try([
+        for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
+        cluster.export.env.value
+        if cluster.export.alias.value == bundle.input.cluster_slug.value
+      ][0], "dev")
+    }
+
+    path = "/config/${let.cluster_env}/workloads/${bundle.input.cluster_slug.value}/${tm_slug(bundle.input.service_name.value)}.tm.hcl"
 
     name = tm_slug(bundle.input.service_name.value)
 

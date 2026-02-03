@@ -281,8 +281,11 @@ terramate-catalyst-examples/
 │       ├── terramate-aws-alb/v1/
 │       ├── terramate-aws-ecs-cluster/v1/
 │       └── terramate-aws-ecs-service/v1/
-├── cloud-services/      # Bundle instance files (what developers create)
-├── cluster-workloads/   # Bundle instance files for workloads
+├── config/              # Bundle instance files (what developers create)
+│   └── {env}/           # Environment-specific configurations (dev, staging, prod, etc.)
+│       ├── cloud-services/  # Infrastructure services (VPC, clusters, etc.)
+│       ├── storage/         # Storage resources (S3, etc.)
+│       └── workloads/       # Application workloads (ECS services, etc.)
 ├── stacks/              # Generated Terramate stacks and Terraform code
 └── imports/             # Shared configuration and mixins
 ```

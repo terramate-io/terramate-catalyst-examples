@@ -27,7 +27,7 @@ define bundle {
   alias = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
 
   scaffolding {
-    path = "/cloud-services/tf-aws-complete-ecs-fargate-cluster/${tm_slug(bundle.input.name.value)}-${bundle.input.env.value}.tm.hcl"
+    path = "/config/${bundle.input.env.value}/cloud-services/tf-aws-complete-ecs-fargate-cluster/${tm_slug(bundle.input.name.value)}.tm.hcl"
     name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
   }
 }
