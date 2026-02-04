@@ -1,9 +1,8 @@
 define bundle {
   input "service_name" {
-    type                  = string
-    prompt                = "Service Name"
-    description           = "Name of the ECS Fargate service"
-    required_for_scaffold = true
+    type        = string
+    prompt      = "Service Name"
+    description = "Name of the ECS Fargate service"
   }
 
   input "cluster_slug" {
@@ -15,8 +14,7 @@ define bundle {
       for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
       { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid})", value = cluster.export.alias.value }
     ]
-    prompt                = "Elastic Container Service (ECS) Cluster"
-    required_for_scaffold = true
+    prompt = "Elastic Container Service (ECS) Cluster"
   }
 
   # input "cluster_bundle_uuid" {
@@ -56,10 +54,9 @@ define bundle {
   }
 
   input "container_image" {
-    type                  = string
-    prompt                = "Container Image"
-    description           = "Docker image URI for the main container"
-    required_for_scaffold = true
+    type        = string
+    prompt      = "Container Image"
+    description = "Docker image URI for the main container"
   }
 
   input "cpu" {
