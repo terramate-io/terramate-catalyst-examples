@@ -8,8 +8,7 @@ define bundle {
     allowed_values = [
       for k, v in global.environments : { name = v, value = k }
     ]
-    required_for_scaffold = true
-    multiselect           = false
+    multiselect = false
   }
 
   input "name" {
@@ -19,8 +18,7 @@ define bundle {
 		EOF
 
     # scaffolding configuration
-    prompt                = "Please enter a cluster name"
-    required_for_scaffold = true
+    prompt = "Please enter a cluster name"
   }
 
   input "vpc_cidr" {

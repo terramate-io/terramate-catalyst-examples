@@ -10,8 +10,7 @@ define bundle {
     allowed_values = [
       for k, v in global.environments : { name = v, value = k }
     ]
-    required_for_scaffold = true
-    multiselect           = false
+    multiselect = false
   }
 
   input "name" {
@@ -19,8 +18,7 @@ define bundle {
     description = "A globally unique name of the S3 bucket"
 
     # Scaffolding configuration
-    prompt                = "S3 Bucket Name"
-    required_for_scaffold = true
+    prompt = "S3 Bucket Name"
   }
 
   input "visibility" {
