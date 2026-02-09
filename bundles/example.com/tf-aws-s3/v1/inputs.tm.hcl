@@ -4,6 +4,7 @@ define bundle {
     type        = string
     description = "A globally unique name of the S3 bucket; it will be suffxed with the current `-{environment}`"
     prompt      = "Name (without environment suffix)"
+    immutable   = true
   }
 
   input "visibility" {

@@ -3,6 +3,7 @@ define bundle {
     type        = string
     prompt      = "Service Name"
     description = "Name of the ECS Fargate service"
+    immutable   = true
   }
 
   input "cluster_slug" {
@@ -14,7 +15,8 @@ define bundle {
       for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
       { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid}) [${cluster.environment.id}]", value = cluster.export.alias.value }
     ]
-    prompt = "Elastic Container Service (ECS) Cluster"
+    prompt    = "Elastic Container Service (ECS) Cluster"
+    immutable = true
   }
 
   input "container_name" {

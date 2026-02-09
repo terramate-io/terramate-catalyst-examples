@@ -6,7 +6,8 @@ define bundle {
 		EOF
 
     # scaffolding configuration
-    prompt = "Please enter a cluster name"
+    prompt    = "Please enter a cluster name"
+    immutable = true
   }
 
   input "vpc_cidr" {
@@ -14,8 +15,9 @@ define bundle {
     description = "CIDR block for the VPC (e.g., 10.0.0.0/16)"
 
     # scaffolding configuration
-    prompt  = "VPC CIDR Block"
-    default = "10.0.0.0/16"
+    prompt    = "VPC CIDR Block"
+    default   = "10.0.0.0/16"
+    immutable = true
   }
 
   input "tags" {
