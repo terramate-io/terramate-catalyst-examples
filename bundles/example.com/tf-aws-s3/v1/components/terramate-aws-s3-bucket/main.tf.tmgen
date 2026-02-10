@@ -1,6 +1,20 @@
 module "s3_bucket" {
-  source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "5.9.0"
+  source = tm_try(
+    component.input.terraform_modules.value["terraform-aws-modules/s3-bucket/aws"].source,
+    # # support for default will be added in future versions
+    # component.input.terraform_modules.default["terraform-aws-modules/s3-bucket/aws"].source,
+    "terraform-aws-modules/s3-bucket/aws"
+  )
+  version = tm_try(
+    component.input.terraform_modules.value["terraform-aws-modules/s3-bucket/aws"].version,
+    # # support for default will be added in future versions
+    # component.input.terraform_modules.default["terraform-aws-modules/s3-bucket/aws"].version,
+
+    # Terramate Note (TF Module Versioning Example Explanation):
+    #
+    # the component falls back to any 5.0 version when no specific one is specified.
+    "~> 5.0"
+  )
 
   bucket = component.input.name.value
   acl    = component.input.acl.value

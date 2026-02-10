@@ -1,16 +1,4 @@
 define bundle {
-  input "env" {
-    type        = string
-    description = "A list of available environments to create the ECS cluster in."
-
-    # scaffolding configuration
-    prompt = "Please chose an environment"
-    allowed_values = [
-      for k, v in global.environments : { name = v, value = k }
-    ]
-    multiselect = false
-  }
-
   input "name" {
     type        = string
     description = <<-EOF

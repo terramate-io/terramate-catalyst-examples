@@ -6,3 +6,10 @@ define component metadata {
     Creates an Application Load Balancer (ALB) on AWS.
   EOF
 }
+
+# define component {
+#   environments {
+#     required  = false # this component requires at least one envrionment to be used Default: `false`
+#     # supported = true # can not be `false` if `required` is `true`. Not PoC
+#   }
+# }

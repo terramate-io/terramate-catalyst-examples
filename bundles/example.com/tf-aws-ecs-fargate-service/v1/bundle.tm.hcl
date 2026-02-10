@@ -13,8 +13,12 @@ define bundle metadata {
 define bundle {
   alias = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
 
+  environments {
+    required = true
+  }
+
   scaffolding {
-    path = "/cluster-workloads/${bundle.input.cluster_slug.value}/${tm_slug(bundle.input.service_name.value)}.tm.hcl"
+    path = "/configs/fargate-clusters/${bundle.input.cluster_slug.value}/service_${tm_slug(bundle.input.service_name.value)}.tm.yml"
 
     name = tm_slug(bundle.input.service_name.value)
 
@@ -22,6 +26,8 @@ define bundle {
       condition     = tm_length(tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1")) > 0
       error_message = <<-EOF
         This bundle requires an instance of the AWS ECS Fargate Cluster (example.com/tf-aws-complete-ecs-fargate-cluster/v1) bundle.
+
+        There seems to be no bundle instance in the selected environment: ${bundle.environment.name} [${bundle.environment.id}]
       EOF
     }
   }

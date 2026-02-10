@@ -11,10 +11,16 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+  alias = tm_slug(bundle.input.name.value)
+
+
+  # Tis bundle requires environments support
+  environments {
+    required = true
+  }
 
   scaffolding {
-    path = "/stacks/${bundle.input.env.value}/s3/_bundle_s3_${tm_slug(bundle.input.name.value)}.tm.hcl"
+    path = "/configs/s3-buckets/s3_${tm_slug(bundle.input.name.value)}.tm.hcl"
     name = tm_slug(bundle.input.name.value)
   }
 }

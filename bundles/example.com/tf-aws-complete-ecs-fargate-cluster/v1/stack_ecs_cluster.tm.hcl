@@ -1,6 +1,6 @@
 define bundle stack "ecs-cluster" {
   metadata {
-    path = "/stacks/${bundle.input.env.value}/ecs-clusters/${tm_slug(bundle.input.name.value)}/cluster"
+    path = "/stacks/${bundle.environment.id}/fargate-clusters/${tm_slug(bundle.input.name.value)}/cluster"
 
     name        = "AWS ECS Fargate Cluster ${bundle.input.name.value}"
     description = <<-EOF
@@ -11,10 +11,10 @@ define bundle stack "ecs-cluster" {
       bundle.class,
       "${bundle.class}/ecs-cluster",
       # "${bundle.class}/ecs-cluster/${bundle.alias}",
-      "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
+      "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.environment.id])}",
 
       # tag the environment
-      "environment/${bundle.input.env.value}",
+      "environment/${bundle.environment.id}",
 
       # configure aws and null provider for this stack
       "terraform/provider/aws",
@@ -27,12 +27,13 @@ define bundle stack "ecs-cluster" {
 
     inputs = {
       # cluster_name = bundle.alias
-      cluster_name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+      cluster_name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.environment.id])
       bundle_uuid  = bundle.uuid
       tags = {
         "${bundle.class}/bundle-uuid" = bundle.uuid
         # "${bundle.class}/bundle-alias"  = bundle.alias
-        "${bundle.class}/bundle-alias" = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+        "${bundle.class}/bundle-alias" = tm_slug(bundle.input.name.value)
+        "${bundle.class}/environment"  = bundle.environment.id
       }
     }
   }
