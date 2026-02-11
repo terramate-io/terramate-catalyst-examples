@@ -32,8 +32,6 @@ define bundle stack "s3-bucket" {
         "${bundle.class}/environment" = bundle.environment.id
       }
 
-      thisshouldfail = "xxx"
-
       terraform_modules = {
         "terraform-aws-modules/s3-bucket/aws" = {
           source = tm_try(
