@@ -10,7 +10,7 @@ define bundle {
     description = "Bundle UUID of the ECS cluster to attach this service to"
 
     # scaffolding configuration
-    allowed_values = [
+    options = [
       for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
       { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid}) [${cluster.environment.id}]", value = cluster.export.alias.value }
     ]
