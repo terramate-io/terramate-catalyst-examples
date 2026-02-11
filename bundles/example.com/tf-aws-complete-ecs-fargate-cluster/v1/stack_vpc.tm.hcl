@@ -1,6 +1,6 @@
 define bundle stack "vpc" {
   metadata {
-    path = "/stacks/${bundle.input.env.value}/ecs-clusters/${tm_slug(bundle.input.name.value)}/vpc"
+    path = "/stacks/${bundle.environment.id}/fargate-clusters/${tm_slug(bundle.input.name.value)}/vpc"
 
     name        = "AWS VPC ${bundle.input.name.value}"
     description = <<-EOF
@@ -11,10 +11,10 @@ define bundle stack "vpc" {
       bundle.class,
       "${bundle.class}/vpc",
       # "${bundle.class}/ecs-cluster/${bundle.alias}",
-      "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])}",
+      "${bundle.class}/ecs-cluster/${tm_slug(bundle.input.name.value)}",
 
       # tag the environment
-      "environment/${bundle.input.env.value}",
+      "environment/${bundle.environment.id}",
 
       # configure aws and null provider for this stack
       "terraform/provider/aws",
@@ -26,12 +26,13 @@ define bundle stack "vpc" {
     source = "/components/example.com/terramate-aws-vpc/v1"
     inputs = {
       # name = bundle.alias
-      name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+      name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.environment.id])
       cidr = bundle.input.vpc_cidr.value
       tags = {
         "${bundle.class}/bundle-uuid" = bundle.uuid
-        # "${bundle.class}/bundle-alias"  = bundle.alias
-        "${bundle.class}/bundle-alias" = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+        # "${bundle.class}/bundle-alias" = bundle.alias
+        "${bundle.class}/bundle-alias" = tm_slug(bundle.input.name.value)
+        "${bundle.class}/environment"  = bundle.environment.id
       }
     }
   }

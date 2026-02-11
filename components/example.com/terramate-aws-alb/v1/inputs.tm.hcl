@@ -4,6 +4,10 @@ define component {
     description = "Name of the ALB"
   }
 
+  input "env" {
+    default = component.environment
+  }
+
   input "vpc_filter_tags" {
     type        = map(string)
     description = "Map of tag key-value pairs to filter VPC via AWS data sources (e.g., {\"example.com/bundle-uuid\" = \"...\"})"

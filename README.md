@@ -255,7 +255,6 @@ input "cluster_slug" {
     { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid})", value = cluster.export.alias.value }
   ]
   prompt                = "Elastic Container Service (ECS) Cluster"
-  required_for_scaffold = true
 }
 ```
 
@@ -267,23 +266,43 @@ Both Components and Bundles can be managed and versioned in Git repositories usi
 
 ## Project Structure
 
-```
+```bash
 terramate-catalyst-examples/
+│
 ├── bundles/              # Bundle definitions
-│   └── example.com/
-│       ├── tf-aws-s3/v1/
-│       ├── tf-aws-complete-ecs-fargate-cluster/v1/
-│       └── tf-aws-ecs-fargate-service/v1/
+│   └── example.com/      # use your domain here for your own bundles
+│       ├── tf-aws-complete-ecs-fargate-cluster/   # The Fargate Cluster  bundle
+│       ├── tf-aws-ecs-fargate-service/            # The Fargate Workload bundle
+│       ├── tf-aws-s3/                             # The S3 bundle
+│       └── tf-aws-s3/v1/components/terramate-aws-s3-bucket/  # nested component definitions
+│
 ├── components/          # Component definitions
-│   └── example.com/
-│       ├── terramate-aws-s3-bucket/v1/
+│   └── example.com/     # use your domain here for your own bundles
 │       ├── terramate-aws-vpc/v1/
 │       ├── terramate-aws-alb/v1/
 │       ├── terramate-aws-ecs-cluster/v1/
 │       └── terramate-aws-ecs-service/v1/
-├── cloud-services/      # Bundle instance files (what developers create)
-├── cluster-workloads/   # Bundle instance files for workloads
-├── stacks/              # Generated Terramate stacks and Terraform code
+│
+│ # Bundle instances (configured by scaffold and reconfigure commands or manually maintained)
+│ #  - each instance contains configurations for all environments in a single file
+│
+├── configs/fargate-clusters/{slug}/cluster.tm.yml         # Bundle instance files of clusters
+├── configs/fargate-clusters/{slug}/service_{name}.tm.yml  # Bundle instance files for workloads
+├── configs/s3-buckets/s3_{name}.tm.yml                    # Bundle instance files for s3-buckets
+│
+│ # Generated Terramate Stacks and Terraform Code for all configured environments
+│
+│   # stacks managed by fargate cluster bundles
+├── stacks/{env}/fargate-clusters/{cluster}/vpc                  # a clusters VPC stack
+├── stacks/{env}/fargate-clusters/{cluster}/alb                  # a clusters ALB stack
+├── stacks/{env}/fargate-clusters/{cluster}/cluster              # the cluster itself stack
+│
+│   # stacks managed by fargate workload bundles
+├── stacks/{env}/fargate-clusters/{cluster}/workloads/{service}  # workloads for the cluster
+│
+│   # stacks managed by S3 bundles
+├── stacks/{env}/s3-buckets/{name}  # S3 buckets
+│
 └── imports/             # Shared configuration and mixins
 ```
 

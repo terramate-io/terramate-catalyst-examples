@@ -24,10 +24,14 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+  alias = tm_slug(bundle.input.name.value)
+
+  environments {
+    required = true
+  }
 
   scaffolding {
-    path = "/cloud-services/tf-aws-complete-ecs-fargate-cluster/${tm_slug(bundle.input.name.value)}-${bundle.input.env.value}.tm.hcl"
-    name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.input.env.value])
+    path = "/configs/fargate-clusters/${tm_slug(bundle.input.name.value)}/cluster.tm.yml"
+    name = tm_slug(bundle.input.name.value)
   }
 }
