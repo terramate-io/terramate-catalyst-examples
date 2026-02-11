@@ -26,7 +26,7 @@ jobs:
       - name: Install Terramate Catalyst
         uses: terramate-io/terramate-action@v3.2.0
         with:
-          version: "0.16.0-beta12"
+          version: "0.17.0-beta13"
           use_catalyst: true
 
       - name: Install asdf
