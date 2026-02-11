@@ -11,7 +11,7 @@ define bundle {
     prompt      = "Bucket Visibility"
     description = "Whether the bucket should be private or public"
     default     = "private"
-    allowed_values = [
+    options = [
       { name = "Private", value = "private" },
       { name = "Public Read", value = "public-read" },
       { name = "Public Read/Write", value = "public-read-write" },
