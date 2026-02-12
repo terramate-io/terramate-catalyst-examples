@@ -12,6 +12,9 @@ define bundle stack "s3-bucket" {
       bundle.class,
       "${bundle.class}/s3-bucket",
       "environment/${bundle.environment.id}",
+
+      # configure aws provider for this stack
+      "terraform/provider/aws",
     ]
   }
 
