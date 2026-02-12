@@ -9,7 +9,11 @@ define bundle stack "ecs-service" {
 
     tags = [
       bundle.class,
-      "environemnt/${bundle.environment.id}",
+      "environment/${bundle.environment.id}",
+
+      # configure aws and null provider for this stack
+      "terraform/provider/aws",
+      "terraform/provider/null",
     ]
 
     after = [
