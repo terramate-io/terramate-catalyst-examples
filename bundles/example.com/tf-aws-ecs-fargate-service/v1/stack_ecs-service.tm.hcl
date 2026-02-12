@@ -26,7 +26,7 @@ define bundle stack "ecs-service" {
     inputs {
       # name         = bundle.alias
       name         = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
-      cluster_name = bundle.input.cluster_slug.value
+      cluster_name = tm_join("-", [bundle.input.cluster_slug.value, bundle.environment.id])
 
       # VPC is derived from the ALB bundle (they share the same UUID in the VPC-ALB bundle)
       vpc_filter_tags = {
@@ -37,7 +37,7 @@ define bundle stack "ecs-service" {
         "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value, bundle.environment.id).uuid
       }
 
-      alb_name          = tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value, bundle.environment.id).export.alb_name.value
+      alb_name          = tm_join("-", [tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value, bundle.environment.id).export.alb_name.value, bundle.environment.id])
       target_group_name = tm_substr(tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)]), 0, 32)
 
       target_group_key = bundle.input.target_group_key.value
