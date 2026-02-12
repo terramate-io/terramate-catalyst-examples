@@ -3,7 +3,7 @@
 resource "null_resource" "initial_deployment_trigger" {
 }
 data "aws_ecs_cluster" "cluster" {
-  cluster_name = "my-cluster"
+  cluster_name = "my-cluster-dev"
   depends_on = [
     null_resource.initial_deployment_trigger,
   ]
@@ -37,7 +37,7 @@ data "aws_lb" "alb" {
   depends_on = [
     null_resource.initial_deployment_trigger,
   ]
-  name = "my-cluster"
+  name = "my-cluster-dev"
 }
 data "aws_lb_target_group" "group" {
   depends_on = [
