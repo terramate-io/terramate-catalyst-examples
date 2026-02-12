@@ -50,7 +50,27 @@ module "alb" {
       }
       port     = 80
       protocol = "HTTP"
-      rules    = {}
+      rules = {
+        my-cluster-my-nginx = {
+          actions = [
+            {
+              forward = {
+                target_group_key = "my-cluster-my-nginx"
+              }
+            },
+          ]
+          conditions = [
+            {
+              path_pattern = {
+                values = [
+                  "/my-nginx/*",
+                ]
+              }
+            },
+          ]
+          priority = 5000
+        }
+      }
     }
   }
   load_balancer_type = "application"
@@ -76,7 +96,27 @@ module "alb" {
     "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid"  = "ae297bd0-842b-4c6c-8a2b-a439616a26f2"
     "example.com/tf-aws-complete-ecs-fargate-cluster/v1/environment"  = "dev"
   }
-  target_groups = {}
-  version       = "10.4.0"
-  vpc_id        = local.vpc_id_value
+  target_groups = {
+    my-cluster-my-nginx = {
+      create_attachment    = false
+      deregistration_delay = 30
+      health_check = {
+        enabled             = true
+        healthy_threshold   = 2
+        interval            = 30
+        matcher             = "200"
+        path                = "/my-nginx/"
+        port                = "traffic-port"
+        protocol            = "HTTP"
+        timeout             = 5
+        unhealthy_threshold = 2
+      }
+      name        = "my-cluster-my-nginx"
+      port        = 3000
+      protocol    = "HTTP"
+      target_type = "ip"
+    }
+  }
+  version = "10.4.0"
+  vpc_id  = local.vpc_id_value
 }
