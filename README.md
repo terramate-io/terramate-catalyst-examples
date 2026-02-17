@@ -82,7 +82,7 @@ Choose the **S3 Bucket Bundle** to create an S3 bucket with just a few prompts�
 
 The scaffold command will:
 1. Prompt you for essential inputs (bucket name, visibility)
-2. Create a bundle instance file (`.tm.hcl`)
+2. Create a bundle instance file (`.tm.yml`, or `.tm.hcl`)
 3. Generate all necessary Terramate stacks and Terraform configuration
 
 After scaffolding, generate the infrastructure code:
@@ -98,6 +98,32 @@ terramate run -- terraform init
 terramate run -- terraform plan
 terramate run -- terraform apply
 ```
+
+### Managing Multiple Environments
+
+A single bundle instance configuration can target multiple environments (e.g., dev, stg, prd) at once. Default inputs are defined in `spec.inputs` and apply to every environment. To customize specific inputs for an individual environment, add overrides under the `environments` block—only the inputs that differ need to be specified.
+
+For example:
+
+```yaml
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: terramate-example-bucket
+spec:
+  source: /bundles/example.com/tf-aws-s3/v1
+  inputs:
+    name: terramate-example-bucket
+    visibility: private          # default for all environments
+environments:
+  dev: {}                        # uses all defaults (private)
+  stg:
+    visibility: public-read      # overrides visibility for staging
+  prd:
+    visibility: public-read-write # overrides visibility for production
+```
+
+Here, `dev` inherits the default `visibility: private`, while `stg` and `prd` each override only the `visibility` input. All other inputs (like `name`) remain the same across all three environments. After editing the file, run `terramate generate` to regenerate the Terraform code for the affected stacks.
 
 ## Examples in This Repository
 
@@ -296,6 +322,7 @@ terramate-catalyst-examples/
 │
 │ # Bundle instances (configured by scaffold and reconfigure commands or manually maintained)
 │ #  - each instance contains configurations for all environments in a single file
+│ #  - per-environment input overrides are supported (see "Managing Multiple Environments" above)
 │
 ├── configs/fargate-clusters/{slug}/cluster.tm.yml         # Bundle instance files of clusters
 ├── configs/fargate-clusters/{slug}/service_{name}.tm.yml  # Bundle instance files for workloads
