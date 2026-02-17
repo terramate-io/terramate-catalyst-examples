@@ -23,13 +23,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Install Terramate Catalyst via GitHub action (includes wrapper for stdout capture)
-      # This enables steps.list.outputs.stdout to work correctly for conditional steps
-      - name: Install Terramate Catalyst
+      - name: Install Terramate
         uses: terramate-io/terramate-action@v3.2.0
-        with:
-          version: "0.17.0-beta13"
-          use_catalyst: true
 
       - name: Install asdf
         uses: asdf-vm/actions/setup@v3

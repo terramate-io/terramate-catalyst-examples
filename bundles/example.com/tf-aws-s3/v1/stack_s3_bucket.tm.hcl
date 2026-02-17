@@ -19,7 +19,7 @@ define bundle stack "s3-bucket" {
   }
 
   component "s3-bucket" {
-    source = "./components/terramate-aws-s3-bucket"
+    source = "/components/example.com/terramate-aws-s3-bucket/v1"
 
     inputs {
       # Terramate Note (Environment Example Explanation):
