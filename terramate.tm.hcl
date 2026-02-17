@@ -1,4 +1,6 @@
 terramate {
+  required_version = ">= 0.16.0"
+
   config {
     experiments = ["tmgen"]
 
@@ -23,7 +25,7 @@ environment {
 environment {
   id           = "stg"
   name         = "Staging"
-  description  = "Pre-Prodution Environment: Staging"
+  description  = "Pre-Production Environment: Staging"
   promote_from = "dev"
 }
 

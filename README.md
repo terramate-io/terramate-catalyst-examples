@@ -1,8 +1,8 @@
-# Terramate Catalyst Examples
+# Terramate Self-Service Examples
 
-This repository contains practical examples demonstrating how [Terramate Catalyst](https://github.com/terramate-io/terramate-catalyst) enables developers to self-service provision infrastructure on AWS using Terraform—without writing Terraform code themselves.
+This repository contains practical examples demonstrating how [Terramate](https://github.com/terramate-io/terramate) enables developers to self-service provision infrastructure on AWS using Terraform without writing Terraform code themselves.
 
-## About Terramate Catalyst
+## About Terramate
 
 [Terramate Catalyst](https://terramate.io/rethinking-iac/technical-introduction-to-terramate-catalyst/) transforms how infrastructure is delivered and consumed inside organizations by introducing two new primitives: **Bundles** and **Components**.
 
@@ -14,7 +14,7 @@ Components can contain any arbitrary IaC—Terraform/OpenTofu resources, Terrafo
 
 ### Bundles
 
-Bundles assemble one or more Components into ready-to-use, deployable units. These are what developers and AI agents consume when requesting infrastructure. Bundles abstract away all the complexity: no need to write Terraform, manage state, or deal with providers—you declare what you need (e.g., "a database for service X in environment Y"), and Catalyst fills in the rest.
+Bundles assemble one or more Components into ready-to-use, deployable units. These are what developers and AI agents consume when requesting infrastructure. Bundles abstract away all the complexity: no need to write Terraform, manage state, or deal with providers—you declare what you need (e.g., "a database for service X in environment Y"), and Terramate fills in the rest.
 
 ### Division of Responsibilities
 
@@ -23,33 +23,35 @@ This separation creates a **clear division of responsibility**:
 - **Platform Engineers** design and maintain infrastructure logic, compliance, scalability, and IaC best practices.
 - **Developers** (or AI agents) request infrastructure via simple, high-level abstractions—without needing to understand Terraform, module variables, or backend configuration.
 
-In other words: Catalyst doesn't replace IaC—it operationalizes it and elegantly hides the complexity for non-expert infrastructure "consumers".
+In other words: Terramate doesn't replace IaC—it operationalize it and elegantly hides the complexity for non-expert infrastructure "consumers".
 
 ## Installation
 
-**Terramate Catalyst** is distributed separately from the Terramate CLI as a standalone binary on GitHub. It ships with two executables—`terramate` and `terramate-ls`—which act as drop-in replacements for the standard Terramate CLI.
+### Install Terramate CLI
 
-### Install Catalyst
-
-The easiest way to install Catalyst is via the **asdf** package manager:
+The easiest way to install Terramate is via the **asdf** package manager:
 
 ```sh
-asdf plugin add terramate-catalyst https://github.com/terramate-io/asdf-terramate-catalyst
-asdf set -u terramate-catalyst 0.17.0-beta13
+asdf plugin add terramate
+asdf install # Run inside this repo
 ```
 
-Alternatively, you can download the binaries directly from the [GitHub releases](https://github.com/terramate-io/terramate-catalyst/releases). More installation options—including additional package managers—are coming soon.
+or by using Homebrew
+
+```sh
+brew install terramate
+```
+
+For other installation methods (Ubuntu/Debian, Fedora/CentOS, Windows, Docker, Go, etc.), see the [Terramate CLI installation documentation](https://terramate.io/docs/cli/installation).
 
 ### Verify Installation
 
-After installing Terramate Catalyst, verify the installation:
+After installing Terramate, verify the installation:
 
 ```sh
 terramate version
-# Should output: 0.17.0-beta13
+# Should output: 0.16.0
 ```
-
-> **Note:** If you are already using Terramate CLI, Terramate Catalyst acts as a drop-in replacement. It provides two binaries (`terramate` and `terramate-ls`) that replace your standard Terramate CLI installation.
 
 ## Getting Started
 
@@ -234,11 +236,11 @@ Creates an S3 bucket on AWS with configurable ACL, versioning, and encryption.
 
 ### Scaffolding Complex IaC
 
-Catalyst works by scaffolding the entire IaC stack, including state configuration and providers, but it doesn't require developers to know Terraform, OpenTofu, or their configuration language (HCL).
+Terramate enables self-service infrastructure provisioning by scaffolding the entire IaC stack, including state configuration and providers, without requiring developers to have knowledge of Terraform, OpenTofu, or HCL (HashiCorp Configuration Language).
 
 Developers can use:
 - The `terramate scaffold` command to choose from bundles available in the current repository, a remote repository, or the upcoming registry in Terramate Cloud
-- The Terramate MCP Server for AI agent integration
+- The Terramate [Agent Skills](https://github.com/terramate-io/agent-skills) and [MCP Server](https://github.com/terramate-io/terramate-mcp-server) for AI agent integration
 - Direct bundle instance file creation
 
 ### Bundle Relationships
