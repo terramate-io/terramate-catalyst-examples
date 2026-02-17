@@ -81,8 +81,8 @@ Choose the **S3 Bucket Bundle** to create an S3 bucket with just a few prompts�
 ![S3 Creation](assets/img/s3-creation.png)
 
 The scaffold command will:
-1. Prompt you for essential inputs (bucket name, ACL, tags)
-2. Create a bundle instance file (`.tm.yml`)
+1. Prompt you for essential inputs (bucket name, visibility)
+2. Create a bundle instance file (`.tm.hcl`)
 3. Generate all necessary Terramate stacks and Terraform configuration
 
 After scaffolding, generate the infrastructure code:
@@ -109,7 +109,7 @@ This repository demonstrates several real-world scenarios:
 
 Allows developers to deploy a simple S3 bucket by defining its name and ACL only—without ever touching Terraform.
 
-**Component:** `example.com/terramate-aws-s3-bucket/v1`
+**Component:** `example.com/tf-aws-s3/v1`
 
 Creates an S3 bucket with:
 - Configurable ACL (default: private)
@@ -123,7 +123,7 @@ Creates an S3 bucket with:
 Deploys a complete, production-ready ECS Fargate cluster with VPC, ALB, and networking—all in minutes.
 
 **Components:**
-- `example.com/terramate-aws-vpc/v1` - VPC with public/private subnets, NAT Gateway
+- `example.com/tf-aws-vpc/v1` - VPC with public/private subnets, NAT Gateway
 - `example.com/terramate-aws-alb/v1` - Application Load Balancer
 - `example.com/terramate-aws-ecs-cluster/v1` - ECS Fargate cluster
 
@@ -135,7 +135,7 @@ This bundle demonstrates how multiple components work together to create complex
 
 Deploys containerized services on existing ECS clusters. The bundle automatically discovers available clusters and configures the ALB to route traffic to the new service.
 
-**Component:** `example.com/terramate-aws-ecs-service/v1`
+**Component:** `example.com/aws-ecs-service/v1`
 
 Creates an ECS Fargate service with:
 - Container definitions
@@ -181,7 +181,7 @@ Creates and manages an ECS Fargate service that can be attached to existing ECS 
 
 ## Available Components
 
-### AWS VPC (`example.com/terramate-aws-vpc/v1`)
+### AWS VPC (`example.com/tf-aws-vpc/v1`)
 
 Creates a VPC on AWS with public and private subnets, NAT gateway, and internet gateway.
 
@@ -210,7 +210,7 @@ Creates an ECS cluster on AWS with a default capacity provider strategy.
 - Capacity provider strategy (Fargate Spot + on-demand)
 - Configurable cluster settings
 
-### AWS ECS Service (`example.com/terramate-aws-ecs-service/v1`)
+### AWS ECS Service (`example.com/aws-ecs-service/v1`)
 
 Creates an ECS Fargate service on AWS with container definitions, load balancer integration, and blue/green deployment support.
 
@@ -222,7 +222,7 @@ Creates an ECS Fargate service on AWS with container definitions, load balancer 
 - Uses private subnets with NAT Gateway for internet access
 - Supports blue/green deployment configuration
 
-### AWS S3 Bucket (`example.com/terramate-aws-s3-bucket/v1`)
+### AWS S3 Bucket (`example.com/tf-aws-s3/v1`)
 
 Creates an S3 bucket on AWS with configurable ACL, versioning, and encryption.
 
@@ -271,26 +271,35 @@ Both Components and Bundles can be managed and versioned in Git repositories usi
 ```bash
 terramate-catalyst-examples/
 │
+├── .github/workflows/   # CI/CD workflows
+│   ├── preview.yml      # PR preview (format, plan, sync)
+│   ├── deploy.yml       # Deployment on merge to main
+│   └── drift.yml        # Scheduled drift detection
+│
+├── terramate.tm.hcl     # Root Terramate config (environments, experiments, cloud org)
+├── config.tm.hcl        # Project-level globals (AWS region, Terraform version)
+├── .tool-versions       # asdf version pinning (Terraform, Terramate)
+│
 ├── bundles/              # Bundle definitions
 │   └── example.com/      # use your domain here for your own bundles
 │       ├── tf-aws-complete-ecs-fargate-cluster/   # The Fargate Cluster  bundle
 │       ├── tf-aws-ecs-fargate-service/            # The Fargate Workload bundle
-│       ├── tf-aws-s3/                             # The S3 bundle
-│       └── tf-aws-s3/v1/components/terramate-aws-s3-bucket/  # nested component definitions
+│       └── tf-aws-s3/                             # The S3 bundle
 │
 ├── components/          # Component definitions
-│   └── example.com/     # use your domain here for your own bundles
+│   └── example.com/     # use your domain here for your own components
 │       ├── terramate-aws-vpc/v1/
 │       ├── terramate-aws-alb/v1/
 │       ├── terramate-aws-ecs-cluster/v1/
-│       └── terramate-aws-ecs-service/v1/
+│       ├── terramate-aws-ecs-service/v1/
+│       └── terramate-aws-s3-bucket/v1/
 │
 │ # Bundle instances (configured by scaffold and reconfigure commands or manually maintained)
 │ #  - each instance contains configurations for all environments in a single file
 │
 ├── configs/fargate-clusters/{slug}/cluster.tm.yml         # Bundle instance files of clusters
 ├── configs/fargate-clusters/{slug}/service_{name}.tm.yml  # Bundle instance files for workloads
-├── configs/s3-buckets/s3_{name}.tm.yml                    # Bundle instance files for s3-buckets
+├── configs/s3-buckets/s3_{name}.tm.hcl                    # Bundle instance files for s3-buckets
 │
 │ # Generated Terramate Stacks and Terraform Code for all configured environments
 │
