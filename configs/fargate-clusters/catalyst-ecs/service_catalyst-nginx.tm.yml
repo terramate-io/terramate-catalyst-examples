@@ -1,0 +1,37 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: catalyst-nginx
+  uuid: 671dcac3-3e1c-4635-afec-57f7a3fa5b48
+spec:
+  source: /bundles/example.com/tf-aws-ecs-fargate-service/v1
+  inputs:
+
+    # tmdoc: Name of the ECS Fargate service
+    service_name: catalyst-nginx
+
+    # tmdoc: Bundle UUID of the ECS cluster to attach this service to
+    cluster_slug: catalyst-ecs
+
+    # tmdoc: Name of the main container
+    container_name: nginx
+
+    # tmdoc: Port that containers will listen on
+    container_port: 80
+
+    # tmdoc: Docker image URI for the main container
+    container_image: nginx:latest
+
+    # tmdoc: CPU units for the task (1024 = 1 vCPU)
+    cpu: 1024
+
+    # tmdoc: Memory for the task in MB
+    memory: 4096
+
+    # tmdoc: Path pattern on the ALB listener to route to this service (e.g., /api/*)
+    path_pattern: /nginx
+
+    # tmdoc: Key/name of the target group in the ALB (e.g., 'http', 'ex_ecs')
+    target_group_key: http
+environments:
+  dev: {}
