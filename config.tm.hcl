@@ -26,7 +26,7 @@ globals "terraform" "backend" {
 
 # globals "terraform" "backend" {
 #   type = "s3"
-#
+
 #   s3 = {
 #     bucket = "example-terraform-state-backend"
 #     region = "us-east-1"
