@@ -1,0 +1,19 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: ecs-fargate-catalyst-demo
+  uuid: c2a0ddaf-fdd6-4b4a-88d1-9f4c5273e7bf
+spec:
+  source: /bundles/example.com/tf-aws-complete-ecs-fargate-cluster/v1
+  inputs:
+
+    # tmdoc: The name for the ECS Fargate Cluster, Load Balancer, and VPC.
+    name: ecs-fargate-catalyst-demo
+
+    # tmdoc: CIDR block for the VPC (e.g., 10.0.0.0/16)
+    vpc_cidr: 10.0.0.0/16
+
+    # tmdoc: AWS Resource tags to attach to all created resources. Additional internal tags will be added by default.
+    tags: {}
+environments:
+  prd: {}

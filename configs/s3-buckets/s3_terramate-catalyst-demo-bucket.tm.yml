@@ -1,0 +1,30 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: terramate-catalyst-demo-bucket
+  uuid: 7e6c3676-a315-44f9-afe0-7812906ea03a
+spec:
+  source: /bundles/example.com/tf-aws-s3/v1
+  inputs:
+
+    # tmdoc: A globally unique name of the S3 bucket; it will be suffxed with the current `-{environment}`
+    name: terramate-catalyst-demo-bucket
+
+    # tmdoc: Whether the bucket should be private or public
+    visibility: private
+
+    # tmdoc: A map to control sources and versions of underlying Terraform Modules used in generated code by underlying components.
+    # tmdoc:
+    # tmdoc: The key of the map is the terraform registry ID of the module.
+    # tmdoc:
+    # tmdoc: Available keys:
+    # tmdoc:   - terraform-aws-modules/s3-bucket/aws
+    terraform_modules:
+      terraform-aws-modules/s3-bucket/aws:
+        source: terraform-aws-modules/s3-bucket/aws
+        version: 5.9.1
+environments:
+  prd: {}
+  shr:
+    inputs:
+      visibility: public-read
