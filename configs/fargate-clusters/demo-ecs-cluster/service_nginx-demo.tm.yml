@@ -1,0 +1,37 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: nginx-demo
+  uuid: 92f7d487-8e8a-4abd-9ba5-11060438643d
+spec:
+  source: /bundles/example.com/tf-aws-ecs-fargate-service/v1
+  inputs:
+
+    # tmdoc: Name of the ECS Fargate service
+    service_name: nginx-demo
+
+    # tmdoc: Bundle UUID of the ECS cluster to attach this service to
+    cluster_slug: demo-ecs-cluster
+
+    # tmdoc: Name of the main container
+    container_name: nginx
+
+    # tmdoc: Port that containers will listen on
+    container_port: 80
+
+    # tmdoc: Docker image URI for the main container
+    container_image: nginx:latest
+
+    # tmdoc: CPU units for the task (1024 = 1 vCPU)
+    cpu: 1024
+
+    # tmdoc: Memory for the task in MB
+    memory: 4096
+
+    # tmdoc: Path pattern on the ALB listener to route to this service (e.g., /api/*)
+    path_pattern: /nginx-demo
+
+    # tmdoc: Key/name of the target group in the ALB (e.g., 'http', 'ex_ecs')
+    target_group_key: http
+environments:
+  dev: {}
