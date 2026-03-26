@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "terramate-best-practices": {
+      "source": "terramate-io/agent-skills",
+      "sourceType": "github",
+      "computedHash": "ef0719d823387c03ad255f71e090a03ed16d795ad79838c49299df1811dbaaf8"
+    }
+  }
+}
