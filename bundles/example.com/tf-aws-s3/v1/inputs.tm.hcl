@@ -3,19 +3,25 @@ define bundle {
   input "name" {
     type        = string
     description = "A globally unique name of the S3 bucket; it will be suffxed with the current `-{environment}`"
-    prompt      = "Name (without environment suffix)"
+
+    prompt {
+      text = "Name (without environment suffix)"
+    }
   }
 
   input "visibility" {
     type        = string
-    prompt      = "Bucket Visibility"
     description = "Whether the bucket should be private or public"
     default     = "private"
-    options = [
-      { name = "Private", value = "private" },
-      { name = "Public Read", value = "public-read" },
-      { name = "Public Read/Write", value = "public-read-write" },
-    ]
+
+    prompt {
+      text = "Bucket Visibility"
+      options = [
+        { name = "Private", value = "private" },
+        { name = "Public Read", value = "public-read" },
+        { name = "Public Read/Write", value = "public-read-write" },
+      ]
+    }
   }
 
   input "terraform_modules" {
