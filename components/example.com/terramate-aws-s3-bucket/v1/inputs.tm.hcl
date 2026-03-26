@@ -1,8 +1,11 @@
 define component {
   input "name" {
     type        = string
-    prompt      = "S3 Bucket Name"
     description = "The name of the S3 bucket"
+
+    prompt {
+      text = "S3 Bucket Name"
+    }
   }
 
   input "acl" {
