@@ -173,6 +173,22 @@ This example showcases **Bundle-to-Bundle relationships**—how bundles can disc
 
 ## Available Bundles
 
+### Account (`example.com/account/v1`)
+
+Organizational bundle that represents an account (e.g., AWS account, GCP project). This bundle does not create any Terraform stacks — it provides identity and hierarchy for infrastructure bundles.
+
+**Inputs:**
+- `account_alias` — A human-friendly alias for the account
+- `account_id` — The account identifier (e.g., AWS account ID or GCP project ID)
+
+### Region (`example.com/region/v1`)
+
+Organizational bundle that represents a region within an account. This bundle does not create any Terraform stacks — it provides region and account identity for infrastructure bundles.
+
+**Inputs:**
+- `account` — Select from existing account bundle instances
+- `region` — The region identifier (e.g., us-east-1, eu-west-1)
+
 ### AWS S3 Bucket (`example.com/tf-aws-s3/v1`)
 
 Creates and manages an S3 bucket on AWS. The bucket can be configured as private or public, with private as the default.
@@ -276,11 +292,11 @@ Bundles can discover and integrate with infrastructure created by other bundles.
 ```hcl
 input "cluster_slug" {
   type        = string
-  description = "Bundle UUID of the ECS cluster to attach this service to"
+  description = "Bundle alias of the ECS cluster to attach this service to"
 
   options = [
     for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
-    { name = "${cluster.input.name.value} (${cluster.export.alias.value} / ${cluster.uuid}) [${cluster.environment.id}]", value = cluster.export.alias.value }
+    { name = "${cluster.input.name.value} (${cluster.export.alias.value}) [${cluster.input.region.value}]", value = cluster.export.alias.value }
   ]
   prompt = "Elastic Container Service (ECS) Cluster"
 }
@@ -308,6 +324,8 @@ terramate-catalyst-examples/
 │
 ├── bundles/              # Bundle definitions
 │   └── example.com/      # use your domain here for your own bundles
+│       ├── account/                               # Account hierarchy bundle (organizational)
+│       ├── region/                                # Region hierarchy bundle (organizational)
 │       ├── tf-aws-complete-ecs-fargate-cluster/   # The Fargate Cluster  bundle
 │       ├── tf-aws-ecs-fargate-service/            # The Fargate Workload bundle
 │       └── tf-aws-s3/                             # The S3 bundle
@@ -324,22 +342,25 @@ terramate-catalyst-examples/
 │ #  - each instance contains configurations for all environments in a single file
 │ #  - per-environment input overrides are supported (see "Managing Multiple Environments" above)
 │
-├── configs/fargate-clusters/{slug}/cluster.tm.yml         # Bundle instance files of clusters
-├── configs/fargate-clusters/{slug}/service_{name}.tm.yml  # Bundle instance files for workloads
-├── configs/s3-buckets/s3_{name}.tm.hcl                    # Bundle instance files for s3-buckets
+├── configs/accounts/{env}/{account}.tm.yml                          # Account bundle instances
+├── configs/accounts/{env}/{account}/region_{region}.tm.yml          # Region bundle instances
+├── configs/fargate-clusters/{slug}/cluster.tm.yml                   # Cluster bundle instances
+├── configs/fargate-clusters/{slug}/service_{name}.tm.yml            # Workload bundle instances
+├── configs/s3-buckets/s3_{name}.tm.hcl                              # S3 bundle instances
 │
 │ # Generated Terramate Stacks and Terraform Code for all configured environments
+│ # Stacks are organized by environment, account, and region:
 │
 │   # stacks managed by fargate cluster bundles
-├── stacks/{env}/fargate-clusters/{cluster}/vpc                  # a clusters VPC stack
-├── stacks/{env}/fargate-clusters/{cluster}/alb                  # a clusters ALB stack
-├── stacks/{env}/fargate-clusters/{cluster}/cluster              # the cluster itself stack
+├── stacks/{env}/{account}/{region}/fargate-clusters/{cluster}/vpc                  # a clusters VPC stack
+├── stacks/{env}/{account}/{region}/fargate-clusters/{cluster}/alb                  # a clusters ALB stack
+├── stacks/{env}/{account}/{region}/fargate-clusters/{cluster}/cluster              # the cluster itself stack
 │
 │   # stacks managed by fargate workload bundles
-├── stacks/{env}/fargate-clusters/{cluster}/workloads/{service}  # workloads for the cluster
+├── stacks/{env}/{account}/{region}/fargate-clusters/{cluster}/workloads/{service}  # workloads for the cluster
 │
 │   # stacks managed by S3 bundles
-├── stacks/{env}/s3-buckets/{name}  # S3 buckets
+├── stacks/{env}/{account}/{region}/s3-buckets/{name}  # S3 buckets
 │
 └── imports/             # Shared configuration and mixins
 ```

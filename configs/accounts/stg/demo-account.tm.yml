@@ -1,0 +1,12 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: demo-account
+  uuid: eda0ccfa-13dd-4479-976d-d423307a3f5e
+spec:
+  source: /bundles/example.com/account/v1
+  inputs:
+    account_alias: demo-account
+    account_id: "123456789012"
+environments:
+  stg: {}

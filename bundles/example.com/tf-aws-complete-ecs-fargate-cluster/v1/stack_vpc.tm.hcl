@@ -1,6 +1,6 @@
 define bundle stack "vpc" {
   metadata {
-    path = "/stacks/${bundle.environment.id}/fargate-clusters/${tm_slug(bundle.input.name.value)}/vpc"
+    path = "/stacks/${bundle.environment.id}/${tm_split("/", bundle.input.region.value)[0]}/${tm_split("/", bundle.input.region.value)[1]}/fargate-clusters/${tm_slug(bundle.input.name.value)}/vpc"
 
     name        = "AWS VPC ${bundle.input.name.value}"
     description = <<-EOF

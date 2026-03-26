@@ -1,6 +1,6 @@
 define bundle stack "s3-bucket" {
   metadata {
-    path = "/stacks/${bundle.environment.id}/s3-buckets/${tm_slug(bundle.input.name.value)}-${bundle.environment.id}"
+    path = "/stacks/${bundle.environment.id}/${tm_split("/", bundle.input.region.value)[0]}/${tm_split("/", bundle.input.region.value)[1]}/s3-buckets/${tm_slug(bundle.input.name.value)}-${bundle.environment.id}"
 
     name        = "AWS S3 Bucket ${bundle.input.name.value}-${bundle.environment.id}"
     description = <<-EOF

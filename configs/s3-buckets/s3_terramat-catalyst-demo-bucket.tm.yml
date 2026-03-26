@@ -7,6 +7,9 @@ spec:
   source: /bundles/example.com/tf-aws-s3/v1
   inputs:
 
+    # tmdoc: The account-region combination to deploy this S3 bucket into
+    region: demo-account/us-east-1
+
     # tmdoc: A globally unique name of the S3 bucket; it will be suffxed with the current `-{environment}`
     name: terramat-catalyst-demo-bucket
 

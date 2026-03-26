@@ -1,0 +1,12 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: demo-account-us-east-1
+  uuid: da837070-fe6c-4ce4-b627-53151a1b619c
+spec:
+  source: /bundles/example.com/region/v1
+  inputs:
+    account: demo-account
+    region: us-east-1
+environments:
+  prd: {}

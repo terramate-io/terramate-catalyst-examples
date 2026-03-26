@@ -1,0 +1,16 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: demo-account-us-east-1
+  uuid: 93311277-1b6b-464e-8b73-958d655fdb2d
+spec:
+  source: /bundles/example.com/region/v1
+  inputs:
+
+    # tmdoc: The account alias to associate this region with
+    account: demo-account
+
+    # tmdoc: The region identifier (e.g., us-east-1, eu-west-1)
+    region: us-east-1
+environments:
+  dev: {}

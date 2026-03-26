@@ -1,0 +1,16 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: demo-account
+  uuid: 0b8b1f72-c313-496b-8edc-1de2037d2f09
+spec:
+  source: /bundles/example.com/account/v1
+  inputs:
+
+    # tmdoc: A human-friendly alias for the account
+    account_alias: demo-account
+
+    # tmdoc: The account identifier (e.g., AWS 12-digit account ID or GCP project ID)
+    account_id: "123456789012"
+environments:
+  dev: {}
