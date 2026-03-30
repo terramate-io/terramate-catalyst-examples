@@ -6,7 +6,7 @@ module "vpc" {
   azs                = slice(data.aws_availability_zones.available.names, 0, 3)
   cidr               = "10.0.0.0/16"
   enable_nat_gateway = true
-  name               = "terramate-catalyst-fargate-cluster-prd"
+  name               = "catalyst-cluster-prd"
   private_subnets = [
     "10.0.0.0/20",
     "10.0.16.0/20",
@@ -20,7 +20,7 @@ module "vpc" {
   single_nat_gateway = true
   source             = "terraform-aws-modules/vpc/aws"
   tags = {
-    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-alias" = "terramate-catalyst-fargate-cluster"
+    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-alias" = "catalyst-cluster"
     "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid"  = "9e932e1e-097f-4b22-b6e6-32cb98048b86"
     "example.com/tf-aws-complete-ecs-fargate-cluster/v1/environment"  = "prd"
   }

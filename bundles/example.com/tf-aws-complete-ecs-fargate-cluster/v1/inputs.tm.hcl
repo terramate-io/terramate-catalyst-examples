@@ -1,4 +1,20 @@
 define bundle {
+  input "region" {
+    type        = string
+    description = "The account-region combination to deploy this cluster into"
+
+    prompt {
+      text = "Account / Region"
+      options = [
+        for r in tm_bundles("example.com/region/v1") :
+        {
+          name  = "${r.export.account_alias.value} - ${r.input.region.value}"
+          value = "${r.export.account_alias_slug.value}/${r.export.region_slug.value}"
+        }
+      ]
+    }
+  }
+
   input "name" {
     type        = string
     description = <<-EOF

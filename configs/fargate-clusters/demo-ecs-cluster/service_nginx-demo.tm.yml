@@ -10,8 +10,11 @@ spec:
     # tmdoc: Name of the ECS Fargate service
     service_name: nginx-demo
 
-    # tmdoc: Bundle UUID of the ECS cluster to attach this service to
+    # tmdoc: Bundle alias of the ECS cluster to attach this service to
     cluster_slug: demo-ecs-cluster
+
+    # tmdoc: The account-region combination (must match the selected cluster's region)
+    region: demo-account/us-east-1
 
     # tmdoc: Name of the main container
     container_name: nginx

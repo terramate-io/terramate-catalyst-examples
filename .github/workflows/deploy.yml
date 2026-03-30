@@ -1,9 +1,7 @@
 name: Terraform Deployment
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:

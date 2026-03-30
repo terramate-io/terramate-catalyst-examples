@@ -7,6 +7,9 @@ spec:
   source: /bundles/example.com/tf-aws-complete-ecs-fargate-cluster/v1
   inputs:
 
+    # tmdoc: The account-region combination to deploy this cluster into
+    region: demo-account/us-east-1
+
     # tmdoc: The name for the ECS Fargate Cluster, Load Balancer, and VPC.
     name: demo-ecs-cluster
 

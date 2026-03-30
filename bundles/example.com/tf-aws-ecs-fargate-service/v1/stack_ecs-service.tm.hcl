@@ -1,6 +1,6 @@
 define bundle stack "ecs-service" {
   metadata {
-    path = "/stacks/${bundle.environment.id}/fargate-clusters/${bundle.input.cluster_slug.value}/workloads/${tm_slug(bundle.input.service_name.value)}"
+    path = "/stacks/${bundle.environment.id}/${tm_split("/", bundle.input.region.value)[0]}/${tm_split("/", bundle.input.region.value)[1]}/fargate-clusters/${bundle.input.cluster_slug.value}/workloads/${tm_slug(bundle.input.service_name.value)}"
 
     name        = "AWS ECS Fargate Service ${bundle.input.service_name.value}"
     description = <<-EOF
