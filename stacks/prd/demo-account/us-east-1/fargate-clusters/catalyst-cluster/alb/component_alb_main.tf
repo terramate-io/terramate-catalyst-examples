@@ -54,7 +54,7 @@ module "alb" {
     }
   }
   load_balancer_type = "application"
-  name               = "terramate-catalyst-fargate-cluster-prd"
+  name               = "catalyst-cluster-prd"
   security_group_egress_rules = {
     all = {
       cidr_ipv4   = "10.0.0.0/16"
@@ -72,7 +72,7 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   subnets = local.subnets_value
   tags = {
-    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-alias" = "terramate-catalyst-fargate-cluster"
+    "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-alias" = "catalyst-cluster"
     "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid"  = "9e932e1e-097f-4b22-b6e6-32cb98048b86"
     "example.com/tf-aws-complete-ecs-fargate-cluster/v1/environment"  = "prd"
   }
