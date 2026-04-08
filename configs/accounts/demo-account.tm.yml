@@ -10,7 +10,13 @@ spec:
     # tmdoc: A human-friendly alias for the account
     account_alias: demo-account
 
-    # tmdoc: The account identifier (e.g., AWS 12-digit account ID or GCP project ID)
-    account_id: "123456789012"
 environments:
-  dev: {}
+  dev:
+    inputs:
+      account_id: "111111111111"
+  stg:
+    inputs:
+      account_id: "222222222222"
+  prd:
+    inputs:
+      account_id: "333333333333"

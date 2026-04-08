@@ -8,29 +8,13 @@ define bundle {
     }
   }
 
-  input "cluster_slug" {
-    type        = string
-    description = "Bundle alias of the ECS cluster to attach this service to"
+  input "cluster" {
+    type        = bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1")
+    immutable   = true
+    description = "The ECS cluster to attach this service to"
 
     prompt {
       text = "Elastic Container Service (ECS) Cluster"
-      options = [
-        for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
-        { name = "${cluster.input.name.value} (${cluster.export.alias.value}) [${cluster.input.region.value}]", value = cluster.export.alias.value }
-      ]
-    }
-  }
-
-  input "region" {
-    type        = string
-    description = "The account-region combination (account_alias/region). Must match the selected cluster's region. Set automatically based on cluster selection."
-
-    prompt {
-      text = "Account / Region (must match the selected cluster)"
-      options = [
-        for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
-        { name = "${cluster.input.name.value} - ${cluster.input.region.value}", value = cluster.export.region_ref.value }
-      ]
     }
   }
 
