@@ -19,7 +19,7 @@ define bundle {
   }
 
   scaffolding {
-    path = "/configs/accounts/${bundle.environment.id}/${tm_slug(bundle.input.account_alias.value)}.tm.yml"
+    path = "/configs/accounts/${tm_slug(bundle.input.account_alias.value)}.tm.yml"
     name = tm_slug(bundle.input.account_alias.value)
   }
 }

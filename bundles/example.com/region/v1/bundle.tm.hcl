@@ -11,23 +11,14 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_slug(tm_join("-", [bundle.input.account.value, bundle.input.region.value]))
+  alias = tm_slug(tm_join("-", [bundle.input.account.value.alias, bundle.input.region.value]))
 
   environments {
     required = true
   }
 
   scaffolding {
-    path = "/configs/accounts/${bundle.environment.id}/${tm_slug(bundle.input.account.value)}/region_${tm_slug(bundle.input.region.value)}.tm.yml"
-    name = tm_slug(tm_join("-", [bundle.input.account.value, bundle.input.region.value]))
-
-    enabled {
-      condition     = tm_length(tm_bundles("example.com/account/v1")) > 0
-      error_message = <<-EOF
-        This bundle requires an instance of the AWS Account (example.com/account/v1) bundle.
-
-        There seems to be no account bundle instance in the selected environment: ${bundle.environment.name} [${bundle.environment.id}]
-      EOF
-    }
+    path = "/configs/accounts/${tm_slug(bundle.input.account.value.alias)}/region_${tm_slug(bundle.input.region.value)}.tm.yml"
+    name = tm_slug(tm_join("-", [bundle.input.account.value.alias, bundle.input.region.value]))
   }
 }

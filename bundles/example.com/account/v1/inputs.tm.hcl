@@ -1,6 +1,7 @@
 define bundle {
   input "account_alias" {
     type        = string
+    immutable   = true
     description = "A human-friendly alias for the account (e.g., 'my-prod-account')"
 
     prompt {

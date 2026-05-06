@@ -33,14 +33,5 @@ define bundle {
   scaffolding {
     path = "/configs/fargate-clusters/${tm_slug(bundle.input.name.value)}/cluster.tm.yml"
     name = tm_slug(bundle.input.name.value)
-
-    enabled {
-      condition     = tm_length(tm_bundles("example.com/region/v1")) > 0
-      error_message = <<-EOF
-        This bundle requires an instance of the AWS Region (example.com/region/v1) bundle.
-
-        There seems to be no region bundle instance in the selected environment: ${bundle.environment.name} [${bundle.environment.id}]
-      EOF
-    }
   }
 }

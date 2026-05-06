@@ -1,7 +1,7 @@
 define bundle {
 
   export "cluster_slug" {
-    value = bundle.input.cluster_slug.value
+    value = bundle.input.cluster.value.alias
   }
 
   export "listener_rule" {
@@ -9,7 +9,7 @@ define bundle {
       priority = 5000
       actions = [{
         forward = {
-          target_group_key = tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)])
+          target_group_key = tm_join("-", [bundle.input.cluster.value.alias, tm_slug(bundle.input.service_name.value)])
         }
       }]
 
@@ -24,7 +24,7 @@ define bundle {
 
   export "target_group" {
     value = {
-      name        = tm_substr(tm_join("-", [bundle.input.cluster_slug.value, tm_slug(bundle.input.service_name.value)]), 0, 32)
+      name        = tm_substr(tm_join("-", [bundle.input.cluster.value.alias, tm_slug(bundle.input.service_name.value)]), 0, 32)
       port        = bundle.input.container_port.value
       protocol    = "HTTP"
       target_type = "ip"
