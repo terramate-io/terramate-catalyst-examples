@@ -1,0 +1,14 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: demo-cluster
+  uuid: 1e65e331-1e64-400d-8123-bf5f93294fa4
+spec: {}
+environments:
+  dev:
+    source: /bundles/example.com/tf-aws-complete-ecs-fargate-cluster/v1
+    inputs:
+      # tmdoc: The region to deploy this cluster into
+      region: demo-account-eu-west-1
+      # tmdoc: The name for the ECS Fargate Cluster, Load Balancer, and VPC.
+      name: Demo Cluster
