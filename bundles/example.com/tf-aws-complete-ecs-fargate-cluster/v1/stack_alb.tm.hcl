@@ -1,6 +1,6 @@
 define bundle stack "alb" {
   metadata {
-    path = "/stacks/${bundle.environment.id}/${tm_split("/", bundle.input.region.value)[0]}/${tm_split("/", bundle.input.region.value)[1]}/fargate-clusters/${tm_slug(bundle.input.name.value)}/alb"
+    path = "/stacks/${bundle.environment.id}/${bundle.input.region.value.export.account_alias_slug.value}/${bundle.input.region.value.export.region_slug.value}/fargate-clusters/${tm_slug(bundle.input.name.value)}/alb"
 
     name        = "AWS ALB ${bundle.input.name.value}"
     description = <<-EOF

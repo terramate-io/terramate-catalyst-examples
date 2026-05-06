@@ -11,8 +11,11 @@ define bundle {
     value = tm_slug(bundle.input.name.value)
   }
 
-  # Passes through the "account_alias/region" value for downstream bundles
-  export "region_ref" {
-    value = bundle.input.region.value
+  export "account_alias_slug" {
+    value = bundle.input.region.value.export.account_alias_slug.value
+  }
+
+  export "region_slug" {
+    value = bundle.input.region.value.export.region_slug.value
   }
 }

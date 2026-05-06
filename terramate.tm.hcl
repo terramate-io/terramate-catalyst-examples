@@ -1,5 +1,5 @@
 terramate {
-  required_version                   = "0.17.0-rc2"
+  required_version                   = "0.17.0-rc6"
   required_version_allow_prereleases = true
 
   config {
@@ -43,3 +43,11 @@ environment {
   description = "A Shared Environment for global resources used by multiple environments."
   # promote_from = null  # default, can not be promoted to=
 }
+
+# scaffold {
+#   package_sources = [
+#     "github.com/terramate-io/terramate-catalyst-examples2?ref=main",
+#     "github.com/terramate-io/terramate-catalyst-examples?ref=main",
+#     "github.com/terramate-io/terramate-catalyst-examples?ref=main",
+#   ]
+# }
