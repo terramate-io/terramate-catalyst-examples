@@ -44,3 +44,7 @@ pr-comment.txt
 .tf_plugin_cache_dir
 
 preview_url.txt
+
+# Claude Code local state
+.claude/worktrees/
+CLAUDE.local.md
