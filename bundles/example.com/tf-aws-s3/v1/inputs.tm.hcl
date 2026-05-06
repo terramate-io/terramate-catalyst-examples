@@ -11,6 +11,7 @@ define bundle {
 
   input "name" {
     type        = string
+    immutable   = true
     description = "A globally unique name of the S3 bucket; it will be suffxed with the current `-{environment}`"
 
     prompt {
