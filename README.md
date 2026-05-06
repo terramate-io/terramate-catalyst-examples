@@ -186,7 +186,7 @@ Organizational bundle that represents an account (e.g., AWS account, GCP project
 Organizational bundle that represents a region within an account. This bundle does not create any Terraform stacks — it provides region and account identity for infrastructure bundles.
 
 **Inputs:**
-- `account` — Select from existing account bundle instances
+- `account` — Reference to an Account Bundle instance (typed as `bundle("example.com/account/v1")`)
 - `region` — The region identifier (e.g., us-east-1, eu-west-1)
 
 ### AWS S3 Bucket (`example.com/tf-aws-s3/v1`)
@@ -215,7 +215,8 @@ Creates a complete, production-ready ECS Fargate cluster infrastructure on AWS.
 Creates and manages an ECS Fargate service that can be attached to existing ECS clusters, VPCs, and Application Load Balancers.
 
 **Features:**
-- Discovers existing ECS clusters via bundle queries
+- References an existing ECS Cluster Bundle instance (typed as `bundle(...)`)
+- Inherits account and region from the selected cluster — no separate region selection
 - Uses AWS data sources to discover resources by tags
 - Configures container definitions and load balancer integration
 - Automatically updates ALB with listener rules and target groups
@@ -287,19 +288,26 @@ Developers can use:
 
 ### Bundle Relationships
 
-Bundles can discover and integrate with infrastructure created by other bundles. For example, the ECS Fargate Service bundle can query for existing ECS clusters:
+Bundles can discover and integrate with infrastructure created by other bundles. The `bundle(...)` input type lets a Bundle reference an existing instance of another Bundle directly — Terramate populates the dropdown automatically and the referenced Bundle's inputs and exports become available via `bundle.input.<name>.value`.
+
+For example, the ECS Fargate Service Bundle references an existing ECS Cluster:
 
 ```hcl
-input "cluster_slug" {
-  type        = string
-  description = "Bundle alias of the ECS cluster to attach this service to"
+input "cluster" {
+  type        = bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1")
+  immutable   = true
+  description = "The ECS cluster to attach this service to"
 
-  options = [
-    for cluster in tm_bundles("example.com/tf-aws-complete-ecs-fargate-cluster/v1") :
-    { name = "${cluster.input.name.value} (${cluster.export.alias.value}) [${cluster.input.region.value}]", value = cluster.export.alias.value }
-  ]
-  prompt = "Elastic Container Service (ECS) Cluster"
+  prompt {
+    text = "Elastic Container Service (ECS) Cluster"
+  }
 }
+```
+
+The Service can then read the Cluster's inputs and exports directly — for example, to derive its stack path from the Cluster's region:
+
+```hcl
+path = "/stacks/${bundle.environment.id}/${bundle.input.cluster.value.export.account_alias_slug.value}/${bundle.input.cluster.value.export.region_slug.value}/fargate-clusters/${bundle.input.cluster.value.alias}/workloads/${tm_slug(bundle.input.service_name.value)}"
 ```
 
 When a new ECS service is deployed, the ALB bundle automatically detects it and updates the load balancer configuration to include the necessary listener rules and target groups.
@@ -342,8 +350,8 @@ terramate-catalyst-examples/
 │ #  - each instance contains configurations for all environments in a single file
 │ #  - per-environment input overrides are supported (see "Managing Multiple Environments" above)
 │
-├── configs/accounts/{env}/{account}.tm.yml                          # Account bundle instances
-├── configs/accounts/{env}/{account}/region_{region}.tm.yml          # Region bundle instances
+├── configs/accounts/{account}.tm.yml                                # Account bundle instances
+├── configs/accounts/{account}/region_{region}.tm.yml                # Region bundle instances
 ├── configs/fargate-clusters/{slug}/cluster.tm.yml                   # Cluster bundle instances
 ├── configs/fargate-clusters/{slug}/service_{name}.tm.yml            # Workload bundle instances
 ├── configs/s3-buckets/s3_{name}.tm.hcl                              # S3 bundle instances
