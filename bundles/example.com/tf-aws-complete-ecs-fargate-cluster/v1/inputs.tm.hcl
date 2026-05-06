@@ -11,6 +11,7 @@ define bundle {
 
   input "name" {
     type        = string
+    immutable   = true
     description = <<-EOF
 		  The name for the ECS Fargate Cluster, Load Balancer, and VPC.
 		EOF

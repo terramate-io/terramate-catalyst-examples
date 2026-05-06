@@ -1,6 +1,7 @@
 define bundle {
   input "service_name" {
     type        = string
+    immutable   = true
     description = "Name of the ECS Fargate service"
 
     prompt {
