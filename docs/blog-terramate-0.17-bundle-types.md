@@ -23,7 +23,32 @@ Two changes do most of the heavy lifting.
 
 Inputs can now be typed as `bundle("...")`. Instead of asking the user for a string and hoping it matches a real instance, the input is wired directly to other Bundle instances. The CLI populates the dropdown for you, and inside the Bundle definition you get the referenced Bundle's inputs, exports, and metadata as a structured object — not a string you have to parse.
 
-In practice this turns the Service Bundle's "which cluster?" question into a real reference. The Service definition can then read the cluster's region, account, and alias directly without re-prompting and without parsing. The "ask the user twice" problem disappears: the second question simply isn't there anymore.
+In our example, the Service Bundle now references a Cluster Bundle directly:
+
+```hcl
+input "cluster" {
+  type        = bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1")
+  immutable   = true
+  description = "The ECS cluster to attach this service to"
+}
+```
+
+The Service can then read the cluster's region, account, and alias directly — for example to compose its stack path:
+
+```hcl
+path = tm_join("/", [
+  "/stacks",
+  bundle.environment.id,
+  bundle.input.cluster.value.export.account_alias_slug.value,
+  bundle.input.cluster.value.export.region_slug.value,
+  "fargate-clusters",
+  bundle.input.cluster.value.alias,
+  "workloads",
+  tm_slug(bundle.input.service_name.value),
+])
+```
+
+No string parsing, no second region prompt — the relationship is just there.
 
 ### Multi-Environment Configs Without Multi-Files
 
@@ -49,7 +74,7 @@ The shared inputs live at the top, the per-environment differences live undernea
 A handful of smaller improvements add up:
 
 - **`immutable = true` on inputs** that should never change after creation — like the account alias and region. The CLI prevents accidental edits, and reviewers don't have to police it in PRs.
-- **A cleaner prompt syntax** that separates the question text from the options list, so it's obvious at a glance which is which.
+- **A cleaner input prompt syntax** that moves prompt-related attributes into a sub-block.
 - **Fewer manual safeguards.** Because `bundle(...)` types only resolve against real instances, the explicit "this Bundle requires another Bundle" error blocks aren't needed. The type system handles it implicitly.
 
 ## What Disappeared from Our Code
