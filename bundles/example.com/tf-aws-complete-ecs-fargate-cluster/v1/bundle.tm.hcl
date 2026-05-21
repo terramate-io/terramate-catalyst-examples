@@ -24,14 +24,14 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_slug(bundle.input.name.value)
+  alias = bundle.let.name_slug
 
   environments {
     required = true
   }
 
   scaffolding {
-    path = "/configs/fargate-clusters/${tm_slug(bundle.input.name.value)}/cluster.tm.yml"
-    name = tm_slug(bundle.input.name.value)
+    path = "/configs/fargate-clusters/${bundle.let.name_slug}/cluster.tm.yml"
+    name = bundle.let.name_slug
   }
 }

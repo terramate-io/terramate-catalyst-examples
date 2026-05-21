@@ -7,10 +7,10 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_slug(bundle.input.name.value)
+  alias = bundle.let.name_slug
 
   scaffolding {
-    path = "/configs/dummy/${tm_slug(bundle.input.name.value)}.tm.yml"
-    name = tm_slug(bundle.input.name.value)
+    path = "/configs/dummy/${bundle.let.name_slug}.tm.yml"
+    name = bundle.let.name_slug
   }
 }

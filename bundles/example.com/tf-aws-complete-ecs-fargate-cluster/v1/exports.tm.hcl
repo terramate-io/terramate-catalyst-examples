@@ -1,21 +1,21 @@
 define bundle {
   export "alias" {
-    value = tm_slug(bundle.input.name.value)
+    value = bundle.let.name_slug
   }
 
   export "name_slug" {
-    value = tm_slug(bundle.input.name.value)
+    value = bundle.let.name_slug
   }
 
   export "alb_name" {
-    value = tm_slug(bundle.input.name.value)
+    value = bundle.let.name_slug
   }
 
   export "account_alias_slug" {
-    value = bundle.input.region.value.export.account_alias_slug.value
+    value = bundle.let.account_slug
   }
 
   export "region_slug" {
-    value = bundle.input.region.value.export.region_slug.value
+    value = bundle.let.region_slug
   }
 }

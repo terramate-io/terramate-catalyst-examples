@@ -12,14 +12,14 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_slug(bundle.input.account_alias.value)
+  alias = bundle.let.alias_slug
 
   environments {
     required = true
   }
 
   scaffolding {
-    path = "/configs/accounts/${tm_slug(bundle.input.account_alias.value)}.tm.yml"
-    name = tm_slug(bundle.input.account_alias.value)
+    path = "/configs/accounts/${bundle.let.alias_slug}.tm.yml"
+    name = bundle.let.alias_slug
   }
 }

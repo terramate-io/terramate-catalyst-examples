@@ -11,8 +11,7 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_slug(bundle.input.name.value)
-
+  alias = bundle.let.name_slug
 
   # Tis bundle requires environments support
   environments {
@@ -20,8 +19,7 @@ define bundle {
   }
 
   scaffolding {
-    path = "/configs/s3-buckets/s3_${tm_slug(bundle.input.name.value)}.tm.hcl"
-    name = tm_slug(bundle.input.name.value)
-
+    path = "/configs/s3-buckets/s3_${bundle.let.name_slug}.tm.hcl"
+    name = bundle.let.name_slug
   }
 }
