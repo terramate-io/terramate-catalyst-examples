@@ -1,5 +1,7 @@
 # What Terramate 0.17 Changes for Multi-Account, Multi-Region Setups
 
+> **Update — Terramate 0.17.1:** A follow-up release closes the gap for Bundle authors with `define bundle lets`, eliminating the repetition that remained inside Bundle definitions themselves. See [Terramate 0.17.1: Bundle Authors Get Their Turn](./blog-terramate-0.17.1-bundle-lets.md).
+
 A few months ago we wrote about [building multi-account, multi-region infrastructure with Terramate Bundles](./blog-multi-account-multi-region-bundles.md) — the result of a live coding session at our KubeCon Amsterdam booth. The setup worked, but the post ended on a self-critical note: we had to lean on workarounds, encode compound values as split-able strings, and ask the user the same question twice in different shapes.
 
 Terramate 0.17 fixes most of that. We've rebuilt the same example using the new release and the result is shorter, clearer, and friendlier to whoever ends up scaffolding infrastructure on a Friday afternoon. Here's what changed.

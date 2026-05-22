@@ -1,5 +1,9 @@
 # Building Multi-Account, Multi-Region Infrastructure with Terramate Bundles
 
+> **Update — Terramate 0.17:** Most of the workarounds in this post are no longer necessary. Typed `bundle(...)` inputs, multi-environment config files, and immutable inputs eliminate the `tm_split` hacks and the redundant region question. See [What Terramate 0.17 Changes for Multi-Account, Multi-Region Setups](./blog-terramate-0.17-bundle-types.md).
+>
+> **Update — Terramate 0.17.1:** The follow-up release introduces `define bundle lets`, which removes the remaining repetition inside Bundle definitions themselves. See [Terramate 0.17.1: Bundle Authors Get Their Turn](./blog-terramate-0.17.1-bundle-lets.md).
+
 At KubeCon 2026 in Amsterdam, visitors at our booth kept asking the same question: "How do you handle multi-account, multi-region setups with Terramate Bundles?" It's a fair question — our example repository showed a single account and a single region, and the real world is rarely that simple.
 
 So while we were running the booth, we fired up Claude Code and started building the solution live. What followed was a single interactive session that took the repository from a flat, single-account structure to full multi-account, multi-region support — all while chatting with attendees between prompts.
