@@ -50,7 +50,7 @@ After installing Terramate, verify the installation:
 
 ```sh
 terramate version
-# Should output: 0.17.0
+# Should output: 0.17.1
 ```
 
 ## Getting Started
