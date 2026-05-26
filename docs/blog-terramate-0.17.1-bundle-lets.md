@@ -1,4 +1,4 @@
-# Iterating on the Examples Again: Bundle Authors Get Their Turn
+# Terramate 0.17.1: Iterating on the Examples Again — Bundle Authors Get Their Turn
 
 The [previous post](./blog-terramate-0.17-bundle-types.md) was about changes we made to the [terramate-catalyst-examples](https://github.com/terramate-io/terramate-catalyst-examples) repo that improved life for the people *using* Bundles — better typed inputs, fewer redundant questions, multi-environment configs. Good iteration. But the people *writing* the Bundles were still repeating themselves.
 
