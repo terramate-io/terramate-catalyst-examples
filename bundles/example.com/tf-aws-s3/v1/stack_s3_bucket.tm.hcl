@@ -1,10 +1,10 @@
 define bundle stack "s3-bucket" {
   metadata {
-    path = "/stacks/${bundle.environment.id}/${bundle.input.region.value.export.account_alias_slug.value}/${bundle.input.region.value.export.region_slug.value}/s3-buckets/${tm_slug(bundle.input.name.value)}-${bundle.environment.id}"
+    path = bundle.let.path_prefix
 
-    name        = "AWS S3 Bucket ${bundle.input.name.value}-${bundle.environment.id}"
+    name        = "AWS S3 Bucket ${bundle.let.bucket_name}"
     description = <<-EOF
-      This stack manages an AWS S3 Bucket named ${bundle.input.name.value}-${bundle.environment.id}
+      This stack manages an AWS S3 Bucket named ${bundle.let.bucket_name}
       for the ${bundle.environment.name} environment.
     EOF
 
@@ -26,7 +26,7 @@ define bundle stack "s3-bucket" {
       #
       # The component does not add any suffix to the name, but this bundle manages multiple environments and thus
       # suffixes the buckets automatically
-      name = "${bundle.input.name.value}-${bundle.environment.id}"
+      name = bundle.let.bucket_name
 
       acl = bundle.input.visibility.value
 
@@ -39,14 +39,10 @@ define bundle stack "s3-bucket" {
         "terraform-aws-modules/s3-bucket/aws" = {
           source = tm_try(
             bundle.input.terraform_modules.value["terraform-aws-modules/s3-bucket/aws"].source,
-            # # support for default will be added in future versions
-            # bundle.input.terraform_modules.default["terraform-aws-modules/s3-bucket/aws"].source,
             "terraform-aws-modules/s3-bucket/aws"
           )
           version = tm_try(
             bundle.input.terraform_modules.value["terraform-aws-modules/s3-bucket/aws"].version,
-            # # support for default will be added in future versions
-            # bundle.input.terraform_modules.default["terraform-aws-modules/s3-bucket/aws"].version,
             "5.9.1"
           )
         }

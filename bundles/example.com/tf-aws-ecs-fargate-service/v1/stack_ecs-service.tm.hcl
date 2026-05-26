@@ -1,6 +1,6 @@
 define bundle stack "ecs-service" {
   metadata {
-    path = "/stacks/${bundle.environment.id}/${bundle.input.cluster.value.export.account_alias_slug.value}/${bundle.input.cluster.value.export.region_slug.value}/fargate-clusters/${bundle.input.cluster.value.alias}/workloads/${tm_slug(bundle.input.service_name.value)}"
+    path = "${bundle.let.path_prefix}"
 
     name        = "AWS ECS Fargate Service ${bundle.input.service_name.value}"
     description = <<-EOF
@@ -17,7 +17,6 @@ define bundle stack "ecs-service" {
     ]
 
     after = [
-      # "example.com/tf-aws-complete-ecs-fargate-cluster/v1/ecs-cluster/${tm_bundle("example.com/tf-aws-complete-ecs-fargate-cluster/v1", bundle.input.cluster_slug.value).alias}",
       "tag:example.com/tf-aws-complete-ecs-fargate-cluster/v1/ecs-cluster",
       "tag:example.com/tf-aws-complete-ecs-fargate-cluster/v1/alb",
       "tag:example.com/tf-aws-complete-ecs-fargate-cluster/v1/vcs",
@@ -28,21 +27,20 @@ define bundle stack "ecs-service" {
     source = "/components/example.com/terramate-aws-ecs-service/v1"
 
     inputs {
-      # name         = bundle.alias
-      name         = tm_join("-", [bundle.input.cluster.value.alias, tm_slug(bundle.input.service_name.value)])
-      cluster_name = tm_join("-", [bundle.input.cluster.value.alias, bundle.environment.id])
+      name         = bundle.let.service_name
+      cluster_name = tm_join("-", [bundle.let.cluster.alias, bundle.environment.id])
 
       # VPC is derived from the ALB bundle (they share the same UUID in the VPC-ALB bundle)
       vpc_filter_tags = {
-        "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = bundle.input.cluster.value.uuid
+        "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = bundle.let.cluster.uuid
       }
 
       alb_filter_tags = {
-        "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = bundle.input.cluster.value.uuid
+        "example.com/tf-aws-complete-ecs-fargate-cluster/v1/bundle-uuid" = bundle.let.cluster.uuid
       }
 
-      alb_name          = tm_join("-", [bundle.input.cluster.value.export.alb_name.value, bundle.environment.id])
-      target_group_name = tm_substr(tm_join("-", [bundle.input.cluster.value.alias, tm_slug(bundle.input.service_name.value)]), 0, 32)
+      alb_name          = tm_join("-", [bundle.let.cluster.export.alb_name.value, bundle.environment.id])
+      target_group_name = tm_substr(bundle.let.service_name, 0, 32)
 
       target_group_key = bundle.input.target_group_key.value
       cpu              = bundle.input.cpu.value
@@ -81,9 +79,8 @@ define bundle stack "ecs-service" {
       }
 
       tags = {
-        "${bundle.class}/bundle-uuid" = bundle.uuid
-        # "${bundle.class}/bundle-alias" = bundle.alias
-        "${bundle.class}/bundle-alias" = tm_join("-", [bundle.input.cluster.value.alias, tm_slug(bundle.input.service_name.value)])
+        "${bundle.class}/bundle-uuid"  = bundle.uuid
+        "${bundle.class}/bundle-alias" = bundle.let.service_name
         "${bundle.class}/environment"  = bundle.environment.id
       }
     }

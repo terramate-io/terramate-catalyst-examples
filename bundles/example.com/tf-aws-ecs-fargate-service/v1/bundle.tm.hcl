@@ -11,15 +11,14 @@ define bundle metadata {
 }
 
 define bundle {
-  alias = tm_join("-", [bundle.input.cluster.value.alias, tm_slug(bundle.input.service_name.value)])
+  alias = bundle.let.service_name
 
   environments {
     required = true
   }
 
   scaffolding {
-    path = "/configs/fargate-clusters/${bundle.input.cluster.value.alias}/service_${tm_slug(bundle.input.service_name.value)}.tm.yml"
-
-    name = tm_slug(bundle.input.service_name.value)
+    path = "/configs/fargate-clusters/${bundle.let.cluster.alias}/service_${bundle.let.service_slug}.tm.yml"
+    name = bundle.let.service_slug
   }
 }

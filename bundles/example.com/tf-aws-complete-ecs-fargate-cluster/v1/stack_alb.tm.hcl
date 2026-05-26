@@ -1,6 +1,6 @@
 define bundle stack "alb" {
   metadata {
-    path = "/stacks/${bundle.environment.id}/${bundle.input.region.value.export.account_alias_slug.value}/${bundle.input.region.value.export.region_slug.value}/fargate-clusters/${tm_slug(bundle.input.name.value)}/alb"
+    path = "${bundle.let.path_prefix}/alb"
 
     name        = "AWS ALB ${bundle.input.name.value}"
     description = <<-EOF
@@ -10,8 +10,7 @@ define bundle stack "alb" {
     tags = [
       bundle.class,
       "${bundle.class}/alb",
-      # "${bundle.class}/ecs-cluster/${bundle.alias}",
-      "${bundle.class}/ecs-cluster/${tm_join("-", [tm_slug(bundle.input.name.value), bundle.environment.id])}",
+      "${bundle.class}/ecs-cluster/${bundle.let.cluster_name}",
 
       # tag the environment
       "environment/${bundle.environment.id}",
@@ -29,8 +28,7 @@ define bundle stack "alb" {
   component "alb" {
     source = "/components/example.com/terramate-aws-alb/v1"
     inputs = {
-      # name = bundle.alias
-      name = tm_join("-", [tm_slug(bundle.input.name.value), bundle.environment.id])
+      name = bundle.let.cluster_name
 
       # The component will automatically find the VPC and subnets by bundle UUID tag
       vpc_filter_tags = {
@@ -82,9 +80,8 @@ define bundle stack "alb" {
       }
 
       tags = {
-        "${bundle.class}/bundle-uuid" = bundle.uuid
-        # "${bundle.class}/bundle-alias" = bundle.alias
-        "${bundle.class}/bundle-alias" = tm_slug(bundle.input.name.value)
+        "${bundle.class}/bundle-uuid"  = bundle.uuid
+        "${bundle.class}/bundle-alias" = bundle.let.name_slug
         "${bundle.class}/environment"  = bundle.environment.id
       }
     }
