@@ -1,0 +1,16 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: application-a
+  uuid: 64cc4ef4-f26b-43f9-a127-ceecc2322646
+spec: {}
+environments:
+  stg:
+    source: /bundles/example.com/tf-aws-ecs-fargate-service/v1
+    inputs:
+      # tmdoc: Name of the ECS Fargate service
+      service_name: application-a
+      # tmdoc: The ECS cluster to attach this service to
+      cluster: main-cluster
+      # tmdoc: Docker image URI for the main container
+      container_image: nginx
