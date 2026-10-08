@@ -1,0 +1,14 @@
+apiVersion: terramate.io/cli/v1
+kind: BundleInstance
+metadata:
+  name: tm-catalyst-example-bucket-123
+  uuid: 29e90fe9-7f58-452f-abdb-4f260dde2b4c
+spec: {}
+environments:
+  dev:
+    source: /bundles/example.com/tf-aws-s3/v1
+    inputs:
+      # tmdoc: The region to deploy this S3 bucket into
+      region: demo-account-eu-west-1
+      # tmdoc: A globally unique name of the S3 bucket; it will be suffxed with the current `-{environment}`
+      name: tm-catalyst-example-bucket-123
